@@ -56,8 +56,8 @@ public class FilaPrioridade implements IFilaPrioridade {
 			No aux = first;// Recebo a referência para o inicio da fila.
 			No aux2 = null;
 			while(aux != null){
-				if(aux.getKey() > key){
-					if(aux == first){
+				if(aux.getKey() > key){// Verifica se a chave do nó é maior que a chave recebida.
+					if(aux == first){// Verifica se o nó auxiliar é o primeiro.
 						novo.setNext(first);
 						first = novo;
 					}
@@ -68,13 +68,13 @@ public class FilaPrioridade implements IFilaPrioridade {
 					quantidadeNo++;
 					return;
 				}
-				else if (aux.getNext() == null){
+				else if (aux.getNext() == null){//Verifica se foi atingido o final da fila, para poder adicionar o novo nó.
 					aux.setNext(novo);
 					quantidadeNo++;
 					return;
 				}
-				aux2 = aux;
-				aux = aux.getNext();
+				aux2 = aux;// Salva a referência de aux.
+				aux = aux.getNext();//aux caminha a fila.
 			}
 		}
 	}
