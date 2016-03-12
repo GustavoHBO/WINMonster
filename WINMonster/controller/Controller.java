@@ -1,10 +1,12 @@
 package controller;
 
-//Alteração Simples
 
-import exceptions.FilaPrioridadeNulaException;
+
+
 import util.FilaPrioridade;
-import util.No;
+import util.Huffman.ArvoreHuffman;
+import util.Huffman.FolhaHuffman;
+
 
 /**
  * Classe controller, responsável pelo gerenciamento do programa.
@@ -14,34 +16,57 @@ import util.No;
  *
  */
 public class Controller {
-
-	/**
-	 * Método responsável pela criação da árvore binária.
-	 * @param filaPrioridade - Fila de Prioridade.
-	 * @throws FilaPrioridadeNulaException - Caso a fila de prioridade seja nula.
-	 */
-	public void criarArvore(FilaPrioridade filaPrioridade) throws FilaPrioridadeNulaException{
+/*---------------------------------------------------------------------------------*/
+	private static final int NUM = 256;
+	private static Controller instance = new Controller();
+	
+	private Controller(){}
+	
+	public static Controller getInstance(){
+		if(instance == null)
+			instance = new Controller();
 		
-		if(filaPrioridade == null){
-			throw new FilaPrioridadeNulaException();
-		}
-		else{
-			No no1, no2;
-			No pai = new No();
-			while(filaPrioridade.obterTamanho() != 1){
-				no1 = (No)filaPrioridade.removerInicio();
-				no2 = (No)filaPrioridade.removerInicio();
-				pai.setKey(no1.getKey() + no2.getKey());
-				if(no1.getKey() > no2.getKey()){
-					pai.setAfter(no1);
-					pai.setNext(no2);
-				}
-				else{
-					pai.setAfter(no1);
-					pai.setNext(no2);
-				}
-				filaPrioridade.inserir(pai.getKey(), pai);
+		return instance;
+	}
+	
+	public static void zerarSingleton(){
+		instance = new Controller();
+	}
+/*---------------------------------------------------------------------------------*/
+	
+	public static int[] calcularFrequencia(String texto){
+		int[] frequencias = new int[NUM];
+		char[] caracteres = texto.toCharArray();
+		
+		for (int i = 0; i < caracteres.length; i++)
+            frequencias[caracteres[i]]++;
+		
+		return frequencias;
+	}
+/*---------------------------------------------------------------------------------*/
+	
+	public static FilaPrioridade criarFilaComFrequencias(int[] frequencias){
+		FilaPrioridade fila = new FilaPrioridade();
+		
+		for(int i =0; i < frequencias.length; i++){
+			if(frequencias[i] > 0){
+				FolhaHuffman folha = new FolhaHuffman();
+				folha.setFrequencia(frequencias[i]);
+				folha.setInfo((char)i);
+				
+				fila.inserir(frequencias[i], folha);
 			}
 		}
+		return fila;
 	}
+/*---------------------------------------------------------------------------------*/
+	
+	public static String[] gerarCodigoHuffman(ArvoreHuffman arvore){
+		String[] dicionario = new String[NUM];
+		
+		ArvoreHuffman.construirCodigo(dicionario, arvore, "");
+		
+		return dicionario;
+	}
+	
 }
