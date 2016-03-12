@@ -1,0 +1,2 @@
+INDEX VERSION 1.127+C:\Users\ThiagoM\Documents\GitHub\WINMonster\.metadata\.plugins\org.eclipse.jdt.core
+2051155627.index
