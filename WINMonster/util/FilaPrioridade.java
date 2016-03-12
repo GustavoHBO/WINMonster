@@ -1,5 +1,8 @@
 package util;
 
+import util.Huffman.ArvoreHuffman;
+import util.Huffman.CelulaHuffman;
+
 /**
  * Classe fila de prioridade, onde é levada em consideração a chave de cada nó a ser inserido.
  * @author Gustavo Henrique.
@@ -14,7 +17,7 @@ public class FilaPrioridade implements IFilaPrioridade {
 	 * @param object - Objeto a ser armazenado na fila.
 	 */
 
-	private int qNo = 0;// Quantidade de nó's da fila.
+	private int quantidadeNo = 0;// Quantidade de nó's da fila.
 	private No first;//Inicio da fila.
 
 	@Override
@@ -33,7 +36,7 @@ public class FilaPrioridade implements IFilaPrioridade {
 	 */
 	@Override
 	public int obterTamanho() {
-		return qNo;// Retorna o tamanho do nó.
+		return quantidadeNo;// Retorna o tamanho do nó.
 	}
 
 	/**
@@ -47,7 +50,7 @@ public class FilaPrioridade implements IFilaPrioridade {
 		No novo = new No(key, o);
 		if(estaVazia()){// Caso não exista objetos na fila.
 			first = novo;
-			qNo++;// Incrementa a quantidade de nó's da fila.
+			quantidadeNo++;// Incrementa a quantidade de nó's da fila.
 		}
 		else{// Vou inserir os nó's de maiores chaves na frente.
 			No aux = first;// Recebo a referência para o inicio da fila.
@@ -62,12 +65,12 @@ public class FilaPrioridade implements IFilaPrioridade {
 						aux2.setNext(novo);
 						novo.setNext(aux);
 					}
-					qNo++;
+					quantidadeNo++;
 					return;
 				}
 				else if (aux.getNext() == null){
 					aux.setNext(novo);
-					qNo++;
+					quantidadeNo++;
 					return;
 				}
 				aux2 = aux;
@@ -89,10 +92,10 @@ public class FilaPrioridade implements IFilaPrioridade {
 		else{
 			objeto = first.getObject();
 			first = first.getNext();
-			if(qNo == 1){
+			if(quantidadeNo == 1){
 				first = null;
 			}
-			qNo--;
+			quantidadeNo--;
 		}
 		return objeto;
 	}
@@ -107,11 +110,33 @@ public class FilaPrioridade implements IFilaPrioridade {
 		return objeto;// Retorna o primeiro objeto da fila.
 	}
 
+	/** Método que gera e retorna uma árvore de Huffman.
+	 * @return primeiro - Primeiro objeto da fila que contém a árvore de Huffman.
+	 */
+	public ArvoreHuffman gerarArvoreHuffman(){
+		
+		ArvoreHuffman primeiro;
+		ArvoreHuffman segundo;
+		
+		while(quantidadeNo >1){
+			primeiro = (ArvoreHuffman)removerInicio();
+			segundo  = (ArvoreHuffman)removerInicio();
+			
+			CelulaHuffman celula = new CelulaHuffman();
+			celula.setEsquerda(primeiro);
+			celula.setDireita(segundo);
+			celula.setFrequencia(primeiro.getFrequencia() + segundo.getFrequencia());
+			inserir(celula.getFrequencia(), celula);
+			
+		}
+		primeiro = (ArvoreHuffman)removerInicio();
+		return primeiro;
+	}
+	
 	/**
 	 * Retorna o iterador da fila.
 	 * @return iterador - Iterador da fila.
 	 */
-
 	public Iterador iterador(){
 		Iterador iterador = new Iterador(first);
 		return iterador;
