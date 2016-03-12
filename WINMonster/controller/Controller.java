@@ -1,5 +1,7 @@
 package controller;
 
+//Alteração Simples
+
 import exceptions.FilaPrioridadeNulaException;
 import util.FilaPrioridade;
 import util.No;
