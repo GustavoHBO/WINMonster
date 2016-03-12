@@ -1,0 +1,5 @@
+package util.Huffman;
+
+public class FolhaHuffman extends ArvoreHuffman{
+
+}
