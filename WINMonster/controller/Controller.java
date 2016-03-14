@@ -48,7 +48,7 @@ public class Controller {
 	public static FilaPrioridade criarFilaComFrequencias(int[] frequencias){
 		FilaPrioridade fila = new FilaPrioridade();
 		
-		for(int i =0; i < frequencias.length; i++){
+		for(int i = 0; i < frequencias.length; i++){
 			if(frequencias[i] > 0){
 				FolhaHuffman folha = new FolhaHuffman();
 				folha.setFrequencia(frequencias[i]);
