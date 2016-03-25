@@ -112,17 +112,20 @@ public class Controller {
 	 * @param nomeArquivo - Nome do arquivo a ser gravado.
 	 * @param caminhoArquivo - Caminho ao qual o arquivo será armazenado.
 	 */
-	public void escreverArquivo(char[] arrayCaractere, String nomeArquivo, String caminhoArquivo){
+	public void escreverArquivo(char[] arrayCaractere, String caminhoArquivo){
 
 		FileWriter fileWrite = null;
 		BufferedWriter buffWrite = null;
-		String nomeCaminho = caminhoArquivo + nomeArquivo + ".monster";// Aqui é especificado o caminho e o nome do arquivo.
+		// Aqui é especificado o caminho e o nome do arquivo.
+
+		String nomeCaminho = caminhoArquivo.substring(0, caminhoArquivo.indexOf('.'));
+		nomeCaminho += ".monster";
 		File arquivo = new File(nomeCaminho);//Instância do arquivo.
 		try {// Ver como vai ser tratado esse tipo de erro.
 			arquivo.createNewFile();//Crio o arquivo no diretório escolhido.
 			fileWrite = new FileWriter(arquivo);// Defino o arquivo ao qual irá ser escrito.
 			buffWrite = new BufferedWriter(fileWrite);// Defino como irá escrever.
-			
+
 			buffWrite.write(arrayCaractere);// Escreve o conteúdo da array no arquivo.
 
 			buffWrite.close();// Fecho o BufferedWrite.
@@ -130,5 +133,59 @@ public class Controller {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Método responsável pela compressão do arquivo escolhido.
+	 * @param caminhoArquivo - Localização do arquivo.
+	 */
+
+	public void comprimirArquivo(String caminhoArquivo){
+
+
+
+		String dadosArquivo = lerArquivo(caminhoArquivo);
+		int[] frequenciaCaractere = calcularFrequencia(dadosArquivo);
+		FilaPrioridade filaFrequencia = criarFilaComFrequencias(frequenciaCaractere);
+		ArvoreHuffman arvoreHuffman = filaFrequencia.gerarArvoreHuffman();
+		String[] dicionario = gerarCodigoHuffman(arvoreHuffman);
+
+		/*
+		 * Abaixo é criado a String que armazenará o dicionário e o arquivo codificado para escrita.
+		 * O tamanho é definido como a soma do tamanho da array de dados + o tamanho do dicionario + dois
+		 * caracteres que servirão para definir o inicio e o fim do dicionário.
+		 */
+		String dadosArquivoCodificado = new String();
+
+		dadosArquivoCodificado = "{";// Define o inicio do dicionário.
+
+		for(int i = 0; i < dicionario.length; i++){
+			if(dicionario[i] != null)
+				dadosArquivoCodificado += dicionario[i];
+		}
+
+		dadosArquivoCodificado += "}";// Define o fim do dicionário.
+
+		dadosArquivoCodificado += (substituirCaractere(dicionario, dadosArquivo.toCharArray()));
+
+		escreverArquivo(dadosArquivoCodificado.toCharArray(), caminhoArquivo);
+
+	}
+
+	/**
+	 * Método que recebe os dados lidos do arquivo e o dicionário e cria o array com os caracteres codificados.
+	 * @param dicionario - Dicionário com os códigos.
+	 * @param dadosArquivo - Os dados lidos do arquivo.
+	 * @return dadosArquivoCodificado - String com a substituição dos caracteres.
+	 */
+	public String substituirCaractere(String[] dicionario, char[] dadosArquivo){
+
+		String dadosArquivoCodificado = new String();
+		for(int i = 0; i < dadosArquivo.length; i++){
+			if(dadosArquivo[i] != '\0')
+				dadosArquivoCodificado += dicionario[dadosArquivo[i]];
+		}
+
+		return dadosArquivoCodificado;
 	}
 }

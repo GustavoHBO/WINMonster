@@ -6,7 +6,7 @@ public class testeConsole {
 
 	static FilaPrioridade fila = new FilaPrioridade();
 	public static void main(String args []){
-		String str1 = new String("Cocada");
+		/*String str1 = new String("Cocada");
 		String str2 = new String("Polenta");
 		String str3 = new String("Caxias");
 		
@@ -16,6 +16,11 @@ public class testeConsole {
 		
 		while(!fila.estaVazia()){
 			System.out.println(fila.removerInicio());
-		}
+		}*/
+		
+		String nome = "\\Gustavo.Henrique";
+		System.out.println(nome.substring(0, nome.lastIndexOf('.')));
+		System.out.println(nome.substring(nome.lastIndexOf('\\'), nome.lastIndexOf('.')));
+
 	}
 }
