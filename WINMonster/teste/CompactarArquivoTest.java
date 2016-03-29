@@ -16,7 +16,8 @@ public class CompactarArquivoTest {
 	
 	@Test
 	public void compactarSucesso(){
-		String texto = "De boa na lagoa, mané bate de cara e cai na proa";
+		String texto = "De boa na lagoa, maré bate na rocha e mané cai na proa";
+		
 		Controller.compactarTexto(texto);
 	}
 }

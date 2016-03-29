@@ -91,11 +91,42 @@ public class Controller {
 		
 		for(int i =0; i < texto.length(); i++){
 			txtCompact += dicionario[texto.charAt(i)];
+			System.out.println(texto.charAt(i) + " - " + dicionario[texto.charAt(i)] + " - " + funcaoHash(dicionario[texto.charAt(i)]));
 		}
-		System.out.println(txtCompact);
-		char[] c = txtCompact.toCharArray();
-		escreverArquivo(c, "CodigoCompactado", "");
+		//System.out.println(txtCompact);
+		char[] tabela = criarTabelaHash(dicionario);
+		int i=0;
+		String stringTabela = " %";
+		for(char c : tabela){
+			if(c != 0){
+				stringTabela += "/" + i + " - " + c;
+			}
+			i++;
+		}
+		String compac = txtCompact + stringTabela;
+		escreverArquivo(compac, "CodigoCompactado", "");
 		
+	}
+	private static int funcaoHash(String codigo){
+		int numero = 0;
+		for(int i = 0; i< codigo.length(); i++){
+			if(codigo.charAt(i) == '1'){
+				numero += Math.pow(2,i);
+			}
+		}
+		return numero;
+	}
+	
+	private static char[] criarTabelaHash(String[] dicionario) {
+		int i =0;
+		char[] tabelaHash = new char[NUM];
+		for(String codigo :dicionario){
+			if(codigo != null){
+				tabelaHash[funcaoHash(codigo)] = (char) i;
+			}
+			i++;
+		}
+		return tabelaHash;
 	}
 
 	/**
@@ -135,7 +166,7 @@ public class Controller {
 	 * @param nomeArquivo - Nome do arquivo a ser gravado.
 	 * @param caminhoArquivo - Caminho ao qual o arquivo será armazenado.
 	 */
-	public static void escreverArquivo(char[] arrayCaractere, String nomeArquivo, String caminhoArquivo){
+	public static void escreverArquivo(String arrayCaractere, String nomeArquivo, String caminhoArquivo){
 
 		FileWriter fileWrite = null;
 		BufferedWriter buffWrite = null;
