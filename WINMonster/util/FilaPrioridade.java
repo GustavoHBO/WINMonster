@@ -4,7 +4,7 @@ import util.Huffman.ArvoreHuffman;
 import util.Huffman.CelulaHuffman;
 
 /**
- * Classe fila de prioridade, onde é levada em consideração a chave de cada nó a ser inserido.
+ * Classe fila de prioridade, onde Ã© levada em consideraÃ§Ã£o a chave de cada nÃ³ a ser inserido.
  * @author Gustavo Henrique.
  * @author Leonardo Melo.
  *
@@ -12,52 +12,52 @@ import util.Huffman.CelulaHuffman;
 public class FilaPrioridade implements IFilaPrioridade {
 
 	/**
-	 * Método de inserir com prioridade, onde a chave do nó.
-	 * @param key - Chave do nó.
+	 * MÃ©todo de inserir com prioridade, onde a chave do nÃ³.
+	 * @param key - Chave do nÃ³.
 	 * @param object - Objeto a ser armazenado na fila.
 	 */
 
-	private int quantidadeNo = 0;// Quantidade de nó's da fila.
+	private int quantidadeNo = 0;// Quantidade de nÃ³'s da fila.
 	private No first;//Inicio da fila.
 
 	@Override
 	/**
 	 * Verifica se a lista esta vazia.
 	 * @see util.IFilaPrioridade#estaVazia()
-	 * @return true - Caso vazia, false - Caso não.
+	 * @return true - Caso vazia, false - Caso nÃ£o.
 	 */
 	public boolean estaVazia() {
-		return first == null;// Verifica se o primeiro nó existe.
+		return first == null;// Verifica se o primeiro nÃ³ existe.
 	}
 
-	/** Método que retorna o tamanho da fila.
+	/** MÃ©todo que retorna o tamanho da fila.
 	 * @see util.IFilaPrioridade#obterTamanho()
 	 * @return int - Tamanho da fila.
 	 */
 	@Override
 	public int obterTamanho() {
-		return quantidadeNo;// Retorna o tamanho do nó.
+		return quantidadeNo;// Retorna o tamanho do nÃ³.
 	}
 
 	/**
-	 * Método de inserir com prioridade, onde a chave do nó.
+	 * MÃ©todo de inserir com prioridade, onde a chave do nÃ³.
 	 * @see util.IFilaPrioridade#inserir(java.lang.Object)
-	 * @param key - Chave do nó.
+	 * @param key - Chave do nÃ³.
 	 * @param object - Objeto a ser armazenado na fila.
 	 */
 	@Override
 	public void inserir(int key, Object o) {
 		No novo = new No(key, o);
-		if(estaVazia()){// Caso não exista objetos na fila.
+		if(estaVazia()){// Caso nÃ£o exista objetos na fila.
 			first = novo;
-			quantidadeNo++;// Incrementa a quantidade de nó's da fila.
+			quantidadeNo++;// Incrementa a quantidade de nÃ³'s da fila.
 		}
-		else{// Vou inserir os nó's de maiores chaves na frente.
-			No aux = first;// Recebo a referência para o inicio da fila.
+		else{// Vou inserir os nÃ³'s de maiores chaves na frente.
+			No aux = first;// Recebo a referÃªncia para o inicio da fila.
 			No aux2 = null;
 			while(aux != null){
-				if(aux.getKey() > key){// Verifica se a chave do nó é maior que a chave recebida.
-					if(aux == first){// Verifica se o nó auxiliar é o primeiro.
+				if(aux.getKey() > key){// Verifica se a chave do nÃ³ Ã© maior que a chave recebida.
+					if(aux == first){// Verifica se o nÃ³ auxiliar Ã© o primeiro.
 						novo.setNext(first);
 						first = novo;
 					}
@@ -68,18 +68,18 @@ public class FilaPrioridade implements IFilaPrioridade {
 					quantidadeNo++;
 					return;
 				}
-				else if (aux.getNext() == null){//Verifica se foi atingido o final da fila, para poder adicionar o novo nó.
+				else if (aux.getNext() == null){//Verifica se foi atingido o final da fila, para poder adicionar o novo nÃ³.
 					aux.setNext(novo);
 					quantidadeNo++;
 					return;
 				}
-				aux2 = aux;// Salva a referência de aux.
+				aux2 = aux;// Salva a referÃªncia de aux.
 				aux = aux.getNext();//aux caminha a fila.
 			}
 		}
 	}
 
-	/** Método que remove um objeto no inicio da fila.
+	/** MÃ©todo que remove um objeto no inicio da fila.
 	 * @see util.IFilaPrioridade#removerInicio().
 	 * @return objeto - Objeto removido do inicio.
 	 */
@@ -100,7 +100,7 @@ public class FilaPrioridade implements IFilaPrioridade {
 		return objeto;
 	}
 
-	/** Método que retorna o primeiro objeto da fila.
+	/** MÃ©todo que retorna o primeiro objeto da fila.
 	 * @see util.IFilaPrioridade#recuperarInicio()
 	 * @return objeto - Primeiro objeto da fila.
 	 */
@@ -110,15 +110,15 @@ public class FilaPrioridade implements IFilaPrioridade {
 		return objeto;// Retorna o primeiro objeto da fila.
 	}
 
-	/** Método que gera e retorna uma árvore de Huffman.
-	 * @return primeiro - Primeiro objeto da fila que contém a árvore de Huffman.
+	/** MÃ©todo que gera e retorna uma Ã¡rvore de Huffman.
+	 * @return primeiro - Primeiro objeto da fila que contÃ©m a Ã¡rvore de Huffman.
 	 */
 	public ArvoreHuffman gerarArvoreHuffman(){
 		
 		ArvoreHuffman primeiro;
 		ArvoreHuffman segundo;
 		
-		while(quantidadeNo >1){
+		while(quantidadeNo > 1){
 			primeiro = (ArvoreHuffman)removerInicio();
 			segundo  = (ArvoreHuffman)removerInicio();
 			
@@ -129,7 +129,7 @@ public class FilaPrioridade implements IFilaPrioridade {
 			inserir(celula.getFrequencia(), celula);
 			
 		}
-		primeiro = (ArvoreHuffman)removerInicio();
+		primeiro = (ArvoreHuffman)removerInicio();// NÃ£o sei porque antes era remover inicio.
 		return primeiro;
 	}
 	

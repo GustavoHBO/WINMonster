@@ -72,10 +72,6 @@ public class WinMonsterIterface {
 		};
 		botaoSair.addActionListener(sairListener);
 		botaoSair.setToolTipText("Sai da aplicação!");
-		botaoSair.setAlignmentX(SwingConstants.TOP);
-		botaoSair.setAlignmentY(SwingConstants.TOP);
-		botaoSair.setBounds(SwingConstants.CENTER, SwingConstants.CENTER, 100, 100);
-		botaoSair.repaint();
 		painelPrincipal.add(botaoSair);
 	}
 

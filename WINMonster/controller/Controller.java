@@ -88,7 +88,7 @@ public class Controller {
 
 	public String lerArquivo(String arquivo){
 
-		String dados = new String();// String onde será armazenada as informações lidas.
+		StringBuffer dados = new StringBuffer();// String onde será armazenada as informações lidas.
 		FileReader arq = null;// Instância do arquivo.
 		BufferedReader buffer = null;// Instância do leitor do arquivo.
 		try {// Ver como será tratado esse erro.
@@ -96,7 +96,7 @@ public class Controller {
 			buffer = new BufferedReader(arq);
 
 			while (buffer.ready()){//Irá ser valido até encontrar o fim do arquivo.
-				dados = dados + buffer.readLine();// Lê linha por linha no arquivo e concatena no final da string dados.
+				dados.append(buffer.readLine());// Lê linha por linha no arquivo e concatena no final da string dados.
 			}
 			buffer.close();// Finalizo o leitor do arquivo.
 			arq.close();// Finalizo o arquivo.
@@ -105,7 +105,7 @@ public class Controller {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return dados;
+		return dados.toString();
 	}
 
 	/**
@@ -123,15 +123,15 @@ public class Controller {
 		String nomeCaminho = caminhoArquivo.substring(0, caminhoArquivo.indexOf('.'));
 		nomeCaminho += ".monster";
 		File arquivo = new File(nomeCaminho);//Instância do arquivo.
-		
+
 		try {// Ver como vai ser tratado esse tipo de erro.
 			arquivo.createNewFile();//Crio o arquivo no diretório escolhido.
 			writeStream = new FileOutputStream(arquivo);
 			writeDataStream = new DataOutputStream(writeStream);
-			
+
 			writeDataStream.writeBytes(dadosCaractere);
 			writeDataStream.write(dadosByte);
-			
+
 			writeDataStream.close();
 			writeStream.close();
 		} catch (IOException e) {
@@ -163,7 +163,7 @@ public class Controller {
 
 		for(int i = 0; i < dicionario.length; i++){
 			if(dicionario[i] != null){
-				
+
 				dadosArquivoCodificado += dicionario[i];
 				dadosArquivoCodificado += (char)i;
 			}
@@ -185,22 +185,33 @@ public class Controller {
 	 */
 	public byte[] substituirCaractere(String[] dicionario, char[] dadosArquivo){
 
-		String dadosArquivoCodificado = new String();
+		StringBuffer dadosArquivoCodificado = new StringBuffer();
 		for(int i = 0; i < dadosArquivo.length; i++){
 			if(dadosArquivo[i] != '\0')
-				dadosArquivoCodificado += dicionario[dadosArquivo[i]];
+				dadosArquivoCodificado.append(dicionario[dadosArquivo[i]]);
 		}
-		int posI = 0, posF = 0, pos = 0;
-		int rep = (dadosArquivoCodificado.length()/8);
-		byte[] dados = new byte [rep + 1];
-		for(int i = 0; dadosArquivoCodificado.length() - i > 8; i+=8){
-			posI = i;
-			posF = i + 8;
-			dados[pos]= (byte) Integer.parseInt(dadosArquivoCodificado.substring(posI, posF), 2);
-			pos++;
+		int tam = dadosArquivoCodificado.length() / 8;
+		StringBuffer dados = new StringBuffer();
+		byte[] dadosByte; 
+		if(dadosArquivoCodificado.length() % 8 == 0){
+			dadosByte = new byte[tam];
 		}
-		dados[rep] = (byte) Integer.parseInt(dadosArquivoCodificado.substring(posF), 2);
+		else{
+			dadosByte = new byte[++tam];
+		}
 
-		return dados;
+		for(int i = 0; i != tam; i++){
+			StringBuffer string = new StringBuffer();
+			for(int j = 0; j < 8; j++){
+				string.append(dadosArquivoCodificado.toString().charAt(j));
+			}
+			dadosByte[i] = (byte) Integer.parseInt(string.toString(), 2);
+		}
+		if(dadosArquivoCodificado.length() % 8 == 0){
+			
+			dadosByte[tam - 1] = Integer.parseInt(s, radix)
+		}
+
+			return dados;
 	}
 }
