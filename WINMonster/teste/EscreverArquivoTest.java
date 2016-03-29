@@ -30,7 +30,7 @@ public class EscreverArquivoTest {
 		String caminhoArquivo = "";
 		String read = "";
 		
-		controller.escreverArquivo(arrayChar.toCharArray(), caminhoArquivo);
+		controller.escreverArquivo(arrayChar, caminhoArquivo);
 		
 		FileReader arquivo = null;
 		BufferedReader buffer = null;

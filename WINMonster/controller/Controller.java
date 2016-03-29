@@ -5,8 +5,10 @@ package controller;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -112,24 +114,26 @@ public class Controller {
 	 * @param nomeArquivo - Nome do arquivo a ser gravado.
 	 * @param caminhoArquivo - Caminho ao qual o arquivo será armazenado.
 	 */
-	public void escreverArquivo(char[] arrayCaractere, String caminhoArquivo){
+	public void escreverArquivo(String dadosCaractere, byte[]dadosByte, String caminhoArquivo){
 
-		FileWriter fileWrite = null;
-		BufferedWriter buffWrite = null;
+		FileOutputStream writeStream = null;
+		DataOutputStream writeDataStream = null;
 		// Aqui é especificado o caminho e o nome do arquivo.
 
 		String nomeCaminho = caminhoArquivo.substring(0, caminhoArquivo.indexOf('.'));
 		nomeCaminho += ".monster";
 		File arquivo = new File(nomeCaminho);//Instância do arquivo.
+		
 		try {// Ver como vai ser tratado esse tipo de erro.
 			arquivo.createNewFile();//Crio o arquivo no diretório escolhido.
-			fileWrite = new FileWriter(arquivo);// Defino o arquivo ao qual irá ser escrito.
-			buffWrite = new BufferedWriter(fileWrite);// Defino como irá escrever.
-
-			buffWrite.write(arrayCaractere);// Escreve o conteúdo da array no arquivo.
-
-			buffWrite.close();// Fecho o BufferedWrite.
-			fileWrite.close();// Fecho o FileWrite.
+			writeStream = new FileOutputStream(arquivo);
+			writeDataStream = new DataOutputStream(writeStream);
+			
+			writeDataStream.writeBytes(dadosCaractere);
+			writeDataStream.write(dadosByte);
+			
+			writeDataStream.close();
+			writeStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -142,8 +146,6 @@ public class Controller {
 
 	public void comprimirArquivo(String caminhoArquivo){
 
-
-
 		String dadosArquivo = lerArquivo(caminhoArquivo);
 		int[] frequenciaCaractere = calcularFrequencia(dadosArquivo);
 		FilaPrioridade filaFrequencia = criarFilaComFrequencias(frequenciaCaractere);
@@ -155,20 +157,23 @@ public class Controller {
 		 * O tamanho é definido como a soma do tamanho da array de dados + o tamanho do dicionario + dois
 		 * caracteres que servirão para definir o inicio e o fim do dicionário.
 		 */
-		String dadosArquivoCodificado = new String();
+		String dadosArquivoCodificado;
 
 		dadosArquivoCodificado = "{";// Define o inicio do dicionário.
 
 		for(int i = 0; i < dicionario.length; i++){
-			if(dicionario[i] != null)
+			if(dicionario[i] != null){
+				
 				dadosArquivoCodificado += dicionario[i];
+				dadosArquivoCodificado += (char)i;
+			}
 		}
 
 		dadosArquivoCodificado += "}";// Define o fim do dicionário.
 
-		dadosArquivoCodificado += (substituirCaractere(dicionario, dadosArquivo.toCharArray()));
+		//dadosArquivoCodificado += (substituirCaractere(dicionario, dadosArquivo.toCharArray()));
 
-		escreverArquivo(dadosArquivoCodificado.toCharArray(), caminhoArquivo);
+		escreverArquivo(dadosArquivoCodificado, substituirCaractere(dicionario, dadosArquivo.toCharArray()), caminhoArquivo);
 
 	}
 
@@ -178,14 +183,24 @@ public class Controller {
 	 * @param dadosArquivo - Os dados lidos do arquivo.
 	 * @return dadosArquivoCodificado - String com a substituição dos caracteres.
 	 */
-	public String substituirCaractere(String[] dicionario, char[] dadosArquivo){
+	public byte[] substituirCaractere(String[] dicionario, char[] dadosArquivo){
 
 		String dadosArquivoCodificado = new String();
 		for(int i = 0; i < dadosArquivo.length; i++){
 			if(dadosArquivo[i] != '\0')
 				dadosArquivoCodificado += dicionario[dadosArquivo[i]];
 		}
+		int posI = 0, posF = 0, pos = 0;
+		int rep = (dadosArquivoCodificado.length()/8);
+		byte[] dados = new byte [rep + 1];
+		for(int i = 0; dadosArquivoCodificado.length() - i > 8; i+=8){
+			posI = i;
+			posF = i + 8;
+			dados[pos]= (byte) Integer.parseInt(dadosArquivoCodificado.substring(posI, posF), 2);
+			pos++;
+		}
+		dados[rep] = (byte) Integer.parseInt(dadosArquivoCodificado.substring(posF), 2);
 
-		return dadosArquivoCodificado;
+		return dados;
 	}
 }

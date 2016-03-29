@@ -1,10 +1,5 @@
 package view;
 
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 public class InterfaceGrafica {
 
 
@@ -49,36 +44,25 @@ public class InterfaceGrafica {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-		String str = "11111111";
+		String str = "0123456789";
 		//int valor2 = valorT(2, 8);
 		//System.out.println(valor2);
-		int valor = criarByte(str);
-		unsi byte valor2 = (byte) 255;
-		System.out.println(valor2);
-		System.out.println(valor);
+//		Integer a = 256;
+//		Integer b = -56;
+//		System.out.println(Integer.toBinaryString(b));
+//		System.out.println(Integer.parseInt(str, 2));
+//		System.out.println(Integer.toBinaryString(255));
+//		
+//		System.out.println((char)97);
+////		System.out.println(Integer.parseInt("00000000", 2));
+		byte a = (byte)'Ç';
+		System.out.println(a);
+		System.out.println(Integer.toBinaryString(a + 128 + 127));
+		System.out.println(Integer.parseInt(Integer.toBinaryString(a + 128 + 127), 2));
+		System.out.println(Integer.toBinaryString(128));
+		System.out.println(Integer.parseInt(Integer.toBinaryString(128), 2));
+		System.out.println((char)a);
+		
 	}
-
-	public static int valorT(int valor, int vezes){
-
-		if (vezes == 1 || vezes == 0){
-			return valor;
-		}
-		else{
-			valor *= valorT(valor, vezes-1);
-		}
-		return valor;
-	}
-	public static int criarByte(String string){
-		char[] str = string.toCharArray();
-		int exp = string.length() - 1;
-		int valor = 0;
-		for(int i = 0; i < string.length(); i++){
-			if(str[i] == '1'){
-				valor += valorT(2, exp - i);
-			}
-		}
-		return valor;
-	}
-
 
 }
