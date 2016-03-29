@@ -41,6 +41,14 @@ public class Controller {
 		instance = new Controller();
 	}
 	/*---------------------------------------------------------------------------------*/
+	public static void compactarTexto(String texto){
+		int[] frequencias = Controller.calcularFrequencia(texto);
+		FilaPrioridade fila = Controller.criarFilaComFrequencias(frequencias);
+		ArvoreHuffman arvore = fila.gerarArvoreHuffman();
+		String[] dicionario = Controller.gerarCodigoHuffman(arvore);
+		Controller.escreverCodigo(dicionario, texto);
+	}
+	/*---------------------------------------------------------------------------------*/
 
 	public static int[] calcularFrequencia(String texto){
 		int[] frequencias = new int[NUM];
@@ -76,7 +84,19 @@ public class Controller {
 
 		return dicionario;
 	}
-
+	/*---------------------------------------------------------------------------------*/
+	
+	public static void escreverCodigo(String[] dicionario, String texto){
+		String txtCompact = "";
+		
+		for(int i =0; i < texto.length(); i++){
+			txtCompact += dicionario[texto.charAt(i)];
+		}
+		System.out.println(txtCompact);
+		char[] c = txtCompact.toCharArray();
+		escreverArquivo(c, "CodigoCompactado", "");
+		
+	}
 
 	/**
 	 * Método responsável pela leitura do arquivo e retorna um array dos dados lidos.
@@ -89,10 +109,13 @@ public class Controller {
 		String dados = new String();// String onde será armazenada as informações lidas.
 		FileReader arq = null;// Instância do arquivo.
 		BufferedReader buffer = null;// Instância do leitor do arquivo.
+		
+		
 		try {// Ver como será tratado esse erro.
 			arq = new FileReader(arquivo);
 			buffer = new BufferedReader(arq);
-
+			
+			
 			while (buffer.ready()){//Irá ser valido até encontrar o fim do arquivo.
 				dados = dados + buffer.readLine();// Lê linha por linha no arquivo e concatena no final da string dados.
 			}
@@ -112,7 +135,7 @@ public class Controller {
 	 * @param nomeArquivo - Nome do arquivo a ser gravado.
 	 * @param caminhoArquivo - Caminho ao qual o arquivo será armazenado.
 	 */
-	public void escreverArquivo(char[] arrayCaractere, String nomeArquivo, String caminhoArquivo){
+	public static void escreverArquivo(char[] arrayCaractere, String nomeArquivo, String caminhoArquivo){
 
 		FileWriter fileWrite = null;
 		BufferedWriter buffWrite = null;

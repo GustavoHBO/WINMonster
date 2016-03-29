@@ -1,0 +1,22 @@
+package teste;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import controller.Controller;
+
+public class CompactarArquivoTest {
+	Controller controller = null;
+	
+	@Before
+	public void setUp() throws Exception {
+		Controller.zerarSingleton();
+		controller = Controller.getInstance();
+	}
+	
+	@Test
+	public void compactarSucesso(){
+		String texto = "De boa na lagoa, mané bate de cara e cai na proa";
+		Controller.compactarTexto(texto);
+	}
+}
