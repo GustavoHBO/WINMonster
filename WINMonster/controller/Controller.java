@@ -43,6 +43,14 @@ public class Controller {
 		instance = new Controller();
 	}
 	/*---------------------------------------------------------------------------------*/
+	public static void compactarTexto(String texto){
+		int[] frequencias = Controller.calcularFrequencia(texto);
+		FilaPrioridade fila = Controller.criarFilaComFrequencias(frequencias);
+		ArvoreHuffman arvore = fila.gerarArvoreHuffman();
+		String[] dicionario = Controller.gerarCodigoHuffman(arvore);
+		Controller.escreverCodigo(dicionario, texto);
+	}
+	/*---------------------------------------------------------------------------------*/
 
 	public static int[] calcularFrequencia(String texto){
 		int[] frequencias = new int[NUM];
@@ -78,7 +86,50 @@ public class Controller {
 
 		return dicionario;
 	}
-
+	/*---------------------------------------------------------------------------------*/
+	
+	public static void escreverCodigo(String[] dicionario, String texto){
+		String txtCompact = "";
+		
+		for(int i =0; i < texto.length(); i++){
+			txtCompact += dicionario[texto.charAt(i)];
+			System.out.println(texto.charAt(i) + " - " + dicionario[texto.charAt(i)] + " - " + funcaoHash(dicionario[texto.charAt(i)]));
+		}
+		//System.out.println(txtCompact);
+		char[] tabela = criarTabelaHash(dicionario);
+		int i=0;
+		String stringTabela = " %";
+		for(char c : tabela){
+			if(c != 0){
+				stringTabela += "/" + i + " - " + c;
+			}
+			i++;
+		}
+		String compac = txtCompact + stringTabela;
+		escreverArquivo(compac, "CodigoCompactado", "");
+		
+	}
+	private static int funcaoHash(String codigo){
+		int numero = 0;
+		for(int i = 0; i< codigo.length(); i++){
+			if(codigo.charAt(i) == '1'){
+				numero += Math.pow(2,i);
+			}
+		}
+		return numero;
+	}
+	
+	private static char[] criarTabelaHash(String[] dicionario) {
+		int i =0;
+		char[] tabelaHash = new char[NUM];
+		for(String codigo :dicionario){
+			if(codigo != null){
+				tabelaHash[funcaoHash(codigo)] = (char) i;
+			}
+			i++;
+		}
+		return tabelaHash;
+	}
 
 	/**
 	 * Método responsável pela leitura do arquivo e retorna um array dos dados lidos.
@@ -91,10 +142,13 @@ public class Controller {
 		StringBuffer dados = new StringBuffer();// String onde será armazenada as informações lidas.
 		FileReader arq = null;// Instância do arquivo.
 		BufferedReader buffer = null;// Instância do leitor do arquivo.
+		
+		
 		try {// Ver como será tratado esse erro.
 			arq = new FileReader(arquivo);
 			buffer = new BufferedReader(arq);
-
+			
+			
 			while (buffer.ready()){//Irá ser valido até encontrar o fim do arquivo.
 				dados.append(buffer.readLine());// Lê linha por linha no arquivo e concatena no final da string dados.
 			}
@@ -114,7 +168,7 @@ public class Controller {
 	 * @param nomeArquivo - Nome do arquivo a ser gravado.
 	 * @param caminhoArquivo - Caminho ao qual o arquivo será armazenado.
 	 */
-	public void escreverArquivo(String dadosCaractere, byte[]dadosByte, String caminhoArquivo){
+	public static void escreverArquivo(String arrayCaractere, String nomeArquivo, String caminhoArquivo){
 
 		FileOutputStream writeStream = null;
 		DataOutputStream writeDataStream = null;
