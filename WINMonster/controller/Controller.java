@@ -87,10 +87,10 @@ public class Controller {
 		return dicionario;
 	}
 	/*---------------------------------------------------------------------------------*/
-	
-	public static void escreverCodigo(String[] dicionario, String texto){
+
+/*	public static void escreverCodigo(String[] dicionario, String texto){
 		String txtCompact = "";
-		
+
 		for(int i =0; i < texto.length(); i++){
 			txtCompact += dicionario[texto.charAt(i)];
 			System.out.println(texto.charAt(i) + " - " + dicionario[texto.charAt(i)] + " - " + funcaoHash(dicionario[texto.charAt(i)]));
@@ -107,8 +107,8 @@ public class Controller {
 		}
 		String compac = txtCompact + stringTabela;
 		escreverArquivo(compac, "CodigoCompactado", "");
-		
-	}
+
+	}*/
 	private static int funcaoHash(String codigo){
 		int numero = 0;
 		for(int i = 0; i< codigo.length(); i++){
@@ -118,7 +118,7 @@ public class Controller {
 		}
 		return numero;
 	}
-	
+
 	private static char[] criarTabelaHash(String[] dicionario) {
 		int i =0;
 		char[] tabelaHash = new char[NUM];
@@ -142,13 +142,13 @@ public class Controller {
 		StringBuffer dados = new StringBuffer();// String onde será armazenada as informações lidas.
 		FileReader arq = null;// Instância do arquivo.
 		BufferedReader buffer = null;// Instância do leitor do arquivo.
-		
-		
+
+
 		try {// Ver como será tratado esse erro.
 			arq = new FileReader(arquivo);
 			buffer = new BufferedReader(arq);
-			
-			
+
+
 			while (buffer.ready()){//Irá ser valido até encontrar o fim do arquivo.
 				dados.append(buffer.readLine());// Lê linha por linha no arquivo e concatena no final da string dados.
 			}
@@ -168,7 +168,7 @@ public class Controller {
 	 * @param nomeArquivo - Nome do arquivo a ser gravado.
 	 * @param caminhoArquivo - Caminho ao qual o arquivo será armazenado.
 	 */
-	public static void escreverArquivo(String arrayCaractere, String nomeArquivo, String caminhoArquivo){
+	public static void escreverArquivo(String arrayCaractere, byte[] arrayByte,  String caminhoArquivo){
 
 		FileOutputStream writeStream = null;
 		DataOutputStream writeDataStream = null;
@@ -183,8 +183,9 @@ public class Controller {
 			writeStream = new FileOutputStream(arquivo);
 			writeDataStream = new DataOutputStream(writeStream);
 
-			writeDataStream.writeBytes(dadosCaractere);
-			writeDataStream.write(dadosByte);
+			writeDataStream.writeChars(arrayCaractere);
+			writeDataStream.write(arrayByte);
+			
 
 			writeDataStream.close();
 			writeStream.close();
@@ -227,7 +228,7 @@ public class Controller {
 
 		//dadosArquivoCodificado += (substituirCaractere(dicionario, dadosArquivo.toCharArray()));
 
-		escreverArquivo(dadosArquivoCodificado, substituirCaractere(dicionario, dadosArquivo.toCharArray()), caminhoArquivo);
+		escreverArquivo(dadosArquivoCodificado,substituirCaractere(dicionario, dadosArquivo.toCharArray()), caminhoArquivo);
 
 	}
 
@@ -253,19 +254,24 @@ public class Controller {
 		else{
 			dadosByte = new byte[++tam];
 		}
-
-		for(int i = 0; i != tam; i++){
-			StringBuffer string = new StringBuffer();
-			for(int j = 0; j < 8; j++){
-				string.append(dadosArquivoCodificado.toString().charAt(j));
+		StringBuffer string;
+		int pos = 0;
+		if(dadosArquivoCodificado.length() >= 8){
+			for(int i = 0; i != tam; i++){
+				string = new StringBuffer();
+				for(int j = 0; j < 8; j++){
+					string.append(dadosArquivoCodificado.toString().charAt(j));
+					pos = j;
+				}
+				dadosByte[i] = (byte) Integer.parseInt(string.toString(), 2);
 			}
-			dadosByte[i] = (byte) Integer.parseInt(string.toString(), 2);
 		}
-		if(dadosArquivoCodificado.length() % 8 == 0){
-			
-			dadosByte[tam - 1] = Integer.parseInt(s, radix)
+		if(dadosArquivoCodificado.length() % 8 != 0){
+
+			dadosByte[tam - 1] = (byte) Integer.parseInt(dadosArquivoCodificado.substring(pos), 2);
+
 		}
 
-			return dados;
+		return dadosByte;
 	}
 }
