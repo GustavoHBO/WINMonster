@@ -88,7 +88,7 @@ public class Controller {
 	}
 	/*---------------------------------------------------------------------------------*/
 
-/*	public static void escreverCodigo(String[] dicionario, String texto){
+	public static void escreverCodigo(String[] dicionario, String texto){
 		String txtCompact = "";
 
 		for(int i =0; i < texto.length(); i++){
@@ -106,9 +106,9 @@ public class Controller {
 			i++;
 		}
 		String compac = txtCompact + stringTabela;
-		escreverArquivo(compac, "CodigoCompactado", "");
+		//escreverArquivo(compac, "CodigoCompactado", "");
 
-	}*/
+	}
 	private static int funcaoHash(String codigo){
 		int numero = 0;
 		for(int i = 0; i< codigo.length(); i++){
