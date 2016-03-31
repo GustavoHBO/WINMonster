@@ -168,7 +168,7 @@ public class Controller {
 	 * @param nomeArquivo - Nome do arquivo a ser gravado.
 	 * @param caminhoArquivo - Caminho ao qual o arquivo será armazenado.
 	 */
-	public static void escreverArquivo(String arrayCaractere, byte[] arrayByte,  String caminhoArquivo){
+	public static void escreverArquivo(String dicionario, byte[] dadosArquivoCodificado,  String caminhoArquivo){
 
 		FileOutputStream writeStream = null;
 		DataOutputStream writeDataStream = null;
@@ -183,8 +183,8 @@ public class Controller {
 			writeStream = new FileOutputStream(arquivo);
 			writeDataStream = new DataOutputStream(writeStream);
 
-			writeDataStream.writeChars(arrayCaractere);
-			writeDataStream.write(arrayByte);
+			writeDataStream.write(dicionario.getBytes());
+			writeDataStream.write(dadosArquivoCodificado);
 			
 
 			writeDataStream.close();
@@ -212,23 +212,23 @@ public class Controller {
 		 * O tamanho é definido como a soma do tamanho da array de dados + o tamanho do dicionario + dois
 		 * caracteres que servirão para definir o inicio e o fim do dicionário.
 		 */
-		String dadosArquivoCodificado;
+		StringBuffer dicionarioCodificado = new StringBuffer();
 
-		dadosArquivoCodificado = "{";// Define o inicio do dicionário.
+		dicionarioCodificado.append("{{");// Define o inicio do dicionário.
 
 		for(int i = 0; i < dicionario.length; i++){
 			if(dicionario[i] != null){
 
-				dadosArquivoCodificado += dicionario[i];
-				dadosArquivoCodificado += (char)i;
+				dicionarioCodificado.append(dicionario[i]);
+				dicionarioCodificado.append((char)i);
 			}
 		}
 
-		dadosArquivoCodificado += "}";// Define o fim do dicionário.
+		dicionarioCodificado.append("}}");// Define o fim do dicionário.
 
 		//dadosArquivoCodificado += (substituirCaractere(dicionario, dadosArquivo.toCharArray()));
 
-		escreverArquivo(dadosArquivoCodificado,substituirCaractere(dicionario, dadosArquivo.toCharArray()), caminhoArquivo);
+		escreverArquivo(dicionarioCodificado.toString(),substituirCaractere(dicionario, dadosArquivo.toCharArray()), caminhoArquivo);
 
 	}
 
@@ -240,10 +240,9 @@ public class Controller {
 	 */
 	public byte[] substituirCaractere(String[] dicionario, char[] dadosArquivo){
 
-		StringBuffer dadosArquivoCodificado = new StringBuffer();
+		String dadosArquivoCodificado = new String();
 		for(int i = 0; i < dadosArquivo.length; i++){
-			if(dadosArquivo[i] != '\0')
-				dadosArquivoCodificado.append(dicionario[dadosArquivo[i]]);
+				dadosArquivoCodificado.concat(dicionario[dadosArquivo[i]]);
 		}
 		int tam = dadosArquivoCodificado.length() / 8;
 		StringBuffer dados = new StringBuffer();
@@ -260,15 +259,15 @@ public class Controller {
 			for(int i = 0; i != tam; i++){
 				string = new StringBuffer();
 				for(int j = 0; j < 8; j++){
-					string.append(dadosArquivoCodificado.toString().charAt(j));
+					string.append(dadosArquivoCodificado.toString().toCharArray()[i]);
 					pos = j;
 				}
 				dadosByte[i] = (byte) Integer.parseInt(string.toString(), 2);
 			}
 		}
 		if(dadosArquivoCodificado.length() % 8 != 0){
-
-			dadosByte[tam - 1] = (byte) Integer.parseInt(dadosArquivoCodificado.substring(pos), 2);
+			String string2 = dadosArquivoCodificado.substring(pos);
+			dadosByte[tam - 1] = (byte) Integer.parseInt(string2, 2);
 
 		}
 
