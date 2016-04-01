@@ -77,6 +77,15 @@ public class Controller {
 		String[] dicionario = new String[NUM];
 
 		ArvoreHuffman.construirCodigo(dicionario, arvore, "");
+		
+		/*-----*/
+		int i = 0;
+		for(String c : dicionario){
+			if(c != null)
+				System.out.println(c +" "+ (char)i);
+			i++;
+		}
+		/*-----*/
 
 		return dicionario;
 	}
@@ -85,6 +94,7 @@ public class Controller {
 	public static byte[] escreverCodigo(String[] dicionario, String texto){
 		String txtCompact = "";
 		String dicioCompact = "";
+		long[] aux;
 		
 		for(int i =0; i < texto.length(); i++){
 			txtCompact += dicionario[texto.charAt(i)];
@@ -94,12 +104,15 @@ public class Controller {
 			if(dicionario[i] != null){
 				
 				dicioCompact += (char)i;
-				dicioCompact += (char) transformarEmBits(dicionario[i])[0];
+				aux = transformarEmBits(dicionario[i]).toLongArray();
+				dicioCompact += (char)aux[0];
+				System.out.println(dicioCompact);
+				
 			}
 		}
 		dicioCompact += ")))";
 		
-		byte[] txtBits = transformarEmBits(txtCompact);
+		byte[] txtBits = transformarEmBits(txtCompact).toByteArray();
 		byte[] dicioBits = dicioCompact.getBytes();
 		
 		byte[] txtTotal = new byte[txtBits.length + dicioBits.length];
@@ -116,9 +129,9 @@ public class Controller {
 	}
 	
 	/*---------------------------------------------------------------------------------*/
-	private static byte[] transformarEmBits(String txt) {
+	private static BitSet transformarEmBits(String txt) {
 		
-		BitSet sequenciaBits = new BitSet(txt.length());
+		BitSet sequenciaBits = new BitSet(txt.length()+1);
 		sequenciaBits.clear();
 		
 		for(int i = 0; i < txt.length(); i++){
@@ -129,21 +142,18 @@ public class Controller {
 				sequenciaBits.set(txt.length() - i - 1, false);
 			}
 		}
-		sequenciaBits.toString();
-		if(sequenciaBits.toByteArray().length == 0){
-			byte[] btZero = new byte[1];
-			btZero[0] = 0;
-			return btZero;
-		}
-		return sequenciaBits.toByteArray();
+		
+		sequenciaBits.set(txt.length());
+		
+		return sequenciaBits;
 	}
 
 	/*---------------------------------------------------------------------------------*/
-	/*private static int funcaoHash(char c){
+	private static int funcaoHash(String codigo){
 		
 		int numero = 0;
-		for(int i = 0; i< codigo.length(); i++){
-			if(codigo.charAt(i) == '1'){
+		for(int i = codigo.length(); i> 0; i--){
+			if(codigo.charAt(codigo.length() - i) == '1'){
 				numero += Math.pow(2,i);
 			}
 		}
@@ -299,32 +309,90 @@ public class Controller {
 
 	private String traduzirCodigo(String dadosArquivo) {
 		char[] dicionario = recuperarDicionario(dadosArquivo);
-		String texto = dadosArquivo.substring(dadosArquivo.indexOf(")))"), dadosArquivo.length());
+		
+		String texto = recuperarTexto(dadosArquivo);
 		BitSet textoBits = BitSet.valueOf(texto.getBytes());
+		String textoCodigo = transformarBitsEmString(textoBits);
+		String traducao = tarduzirTexto(dicionario, textoCodigo);
+		
+		return traducao;
+	}
+
+	private String recuperarTexto(String dadosArquivo) {
+		StringBuffer buff = new StringBuffer(dadosArquivo);
+		
+		buff.replace(0 ,buff.indexOf(")))")+3, "");
+		
+		System.out.println(buff.toString());
+		return buff.toString();
+	}
+
+	private String tarduzirTexto(char[] dicionario, String textoCodigo) {
 		String traducao = "";
+		StringBuffer buff = new StringBuffer(textoCodigo);
+		String aux;
+		boolean flag;
+		System.out.println(buff.toString());
+		//System.out.println(buff.reverse().toString());
+		buff = buff.reverse();
 		
-		
-		
-		String auxTrad = "";
-		for(int i =0; i< texto.getBytes().length; i++){
-			if(textoBits.get(i)){
-				auxTrad+= '1';
-			}else{
-				auxTrad+= '0';
-			}
+		while(buff.length() > 0){
+			aux = "";
+			flag = true;
 			
+			while(flag){
+				aux += buff.charAt(0);
+				System.out.println(aux);
+				buff.deleteCharAt(0);
+				if(funcaoHash(aux) > dicionario.length)break;
+				if(dicionario[funcaoHash(aux)] != 0){
+					traducao += dicionario[funcaoHash(aux)];
+					flag = false;
+				}
+				if(buff.length() == 0)
+					flag = false;
+			}
 		}
-		return null;
+		System.out.println("Tradução: " + traducao);
+		return traducao;
 	}
 
 	private char[] recuperarDicionario(String dadosArquivo) {
-		byte[] dicionarioTxt = (dadosArquivo.substring(0, dadosArquivo.indexOf(")))"))).getBytes();
-		char[] dicionario = new char[NUM];
+		StringBuffer buff = new StringBuffer(dadosArquivo);
 		
-		for(int i = 0; i < dicionarioTxt.length; i += 2){
-			dicionario[dicionarioTxt[i+1]] = (char)dicionarioTxt[i];
+		System.out.println(buff.toString());
+		buff.replace(buff.indexOf(")))"), buff.length(), "");
+		System.out.println(buff.toString());
+		
+		byte[] dicionarioTxt = (buff.toString()).getBytes();
+		char[] dicionario = new char[NUM*NUM];
+		String codigo = new String();
+		long[] codigoUnit = new long[1];
+		
+		for(int i =0; i+1 < dicionarioTxt.length; i += 2){
+			codigoUnit[0] = dicionarioTxt[i+1];
+			//codigoUnit[1] = dicionarioTxt[i+2];
+			codigo = transformarBitsEmString(BitSet.valueOf(codigoUnit));
+			dicionario [funcaoHash(codigo)] = (char)(dicionarioTxt[i]) ;
+			System.out.println(dicionario [funcaoHash(codigo)] +" "+ codigo);
 		}
+		
 		return dicionario;
 		
+	}
+
+	private String transformarBitsEmString(BitSet bits) {
+		String stringCod = "";
+		for(int i = 0; i < bits.length(); i++){
+			if(bits.get(bits.length() - i -1)){
+				
+				stringCod += '1';
+			}else{
+				stringCod += '0';
+			}
+			
+		}
+		StringBuffer buff = new StringBuffer(stringCod);
+		return buff.reverse().toString();
 	}
 }

@@ -1,0 +1,11 @@
+package programaTestes;
+
+public class Principal {
+	public static void main(String[] args) {
+		String b = "FRENTE";
+		byte[] bytes = b.getBytes();
+		System.out.println((char)bytes[0]);
+		
+	}
+
+}
