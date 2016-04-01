@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.BitSet;
 
 import util.FilaPrioridade;
 import util.Huffman.ArvoreHuffman;
@@ -43,14 +44,7 @@ public class Controller {
 		instance = new Controller();
 	}
 	/*---------------------------------------------------------------------------------*/
-	public static void compactarTexto(String texto){
-		int[] frequencias = Controller.calcularFrequencia(texto);
-		FilaPrioridade fila = Controller.criarFilaComFrequencias(frequencias);
-		ArvoreHuffman arvore = fila.gerarArvoreHuffman();
-		String[] dicionario = Controller.gerarCodigoHuffman(arvore);
-		Controller.escreverCodigo(dicionario, texto);
-	}
-	/*---------------------------------------------------------------------------------*/
+	
 
 	public static int[] calcularFrequencia(String texto){
 		int[] frequencias = new int[NUM];
@@ -88,28 +82,65 @@ public class Controller {
 	}
 	/*---------------------------------------------------------------------------------*/
 
-/*	public static void escreverCodigo(String[] dicionario, String texto){
+	public static byte[] escreverCodigo(String[] dicionario, String texto){
 		String txtCompact = "";
-
+		String dicioCompact = "";
+		
 		for(int i =0; i < texto.length(); i++){
 			txtCompact += dicionario[texto.charAt(i)];
-			System.out.println(texto.charAt(i) + " - " + dicionario[texto.charAt(i)] + " - " + funcaoHash(dicionario[texto.charAt(i)]));
 		}
-		//System.out.println(txtCompact);
-		char[] tabela = criarTabelaHash(dicionario);
-		int i=0;
-		String stringTabela = " %";
-		for(char c : tabela){
-			if(c != 0){
-				stringTabela += "/" + i + " - " + c;
+		
+		for(int i =0; i < dicionario.length ; i++){
+			if(dicionario[i] != null){
+				
+				dicioCompact += (char)i;
+				dicioCompact += (char) transformarEmBits(dicionario[i])[0];
 			}
-			i++;
 		}
-		String compac = txtCompact + stringTabela;
-		escreverArquivo(compac, "CodigoCompactado", "");
+		dicioCompact += ")))";
+		
+		byte[] txtBits = transformarEmBits(txtCompact);
+		byte[] dicioBits = dicioCompact.getBytes();
+		
+		byte[] txtTotal = new byte[txtBits.length + dicioBits.length];
+		
+		for(int i = 0; i< dicioBits.length; i++){
+			txtTotal[i] = dicioBits[i];
+		}
+		for(int i = dicioBits.length; i< dicioBits.length + txtBits.length; i++){
+			txtTotal[i] = txtBits[i - dicioBits.length];
+		}
+		
+		return txtTotal;		
 
-	}*/
-	private static int funcaoHash(String codigo){
+	}
+	
+	/*---------------------------------------------------------------------------------*/
+	private static byte[] transformarEmBits(String txt) {
+		
+		BitSet sequenciaBits = new BitSet(txt.length());
+		sequenciaBits.clear();
+		
+		for(int i = 0; i < txt.length(); i++){
+			
+			if(txt.charAt(i) == '1'){
+				sequenciaBits.set(txt.length() - i - 1);
+			}else if(txt.charAt(i) == '0'){
+				sequenciaBits.set(txt.length() - i - 1, false);
+			}
+		}
+		sequenciaBits.toString();
+		if(sequenciaBits.toByteArray().length == 0){
+			byte[] btZero = new byte[1];
+			btZero[0] = 0;
+			return btZero;
+		}
+		return sequenciaBits.toByteArray();
+	}
+
+	/*---------------------------------------------------------------------------------*/
+	/*private static int funcaoHash(char c){
+		
 		int numero = 0;
 		for(int i = 0; i< codigo.length(); i++){
 			if(codigo.charAt(i) == '1'){
@@ -118,7 +149,7 @@ public class Controller {
 		}
 		return numero;
 	}
-
+/*
 	private static char[] criarTabelaHash(String[] dicionario) {
 		int i =0;
 		char[] tabelaHash = new char[NUM];
@@ -130,7 +161,7 @@ public class Controller {
 		}
 		return tabelaHash;
 	}
-
+	/*---------------------------------------------------------------------------------*/
 	/**
 	 * Método responsável pela leitura do arquivo e retorna um array dos dados lidos.
 	 * @param arquivo - Nome do arquivo a ser lido.
@@ -161,14 +192,14 @@ public class Controller {
 		}
 		return dados.toString();
 	}
-
+	/*---------------------------------------------------------------------------------*/
 	/**
 	 * Método responsável pela escrita dos arquivos seguindo o algoritmo de Huffman.
 	 * @param arrayCaractere - Array com os códigos dos caracteres.
 	 * @param nomeArquivo - Nome do arquivo a ser gravado.
 	 * @param caminhoArquivo - Caminho ao qual o arquivo será armazenado.
 	 */
-	public static void escreverArquivo(String arrayCaractere, byte[] arrayByte,  String caminhoArquivo){
+	public static void escreverArquivo(byte[] texto,  String caminhoArquivo){
 
 		FileOutputStream writeStream = null;
 		DataOutputStream writeDataStream = null;
@@ -183,17 +214,16 @@ public class Controller {
 			writeStream = new FileOutputStream(arquivo);
 			writeDataStream = new DataOutputStream(writeStream);
 
-			writeDataStream.writeChars(arrayCaractere);
-			writeDataStream.write(arrayByte);
+			writeDataStream.write(texto);
 			
-
 			writeDataStream.close();
 			writeStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/*---------------------------------------------------------------------------------*/
 	/**
 	 * Método responsável pela compressão do arquivo escolhido.
 	 * @param caminhoArquivo - Localização do arquivo.
@@ -212,24 +242,15 @@ public class Controller {
 		 * O tamanho é definido como a soma do tamanho da array de dados + o tamanho do dicionario + dois
 		 * caracteres que servirão para definir o inicio e o fim do dicionário.
 		 */
-		String dadosArquivoCodificado;
+		escreverArquivo(escreverCodigo(dicionario, dadosArquivo), caminhoArquivo);
 
-		dadosArquivoCodificado = "{";// Define o inicio do dicionário.
-
-		for(int i = 0; i < dicionario.length; i++){
-			if(dicionario[i] != null){
-
-				dadosArquivoCodificado += dicionario[i];
-				dadosArquivoCodificado += (char)i;
-			}
-		}
-
-		dadosArquivoCodificado += "}";// Define o fim do dicionário.
-
-		//dadosArquivoCodificado += (substituirCaractere(dicionario, dadosArquivo.toCharArray()));
-
-		escreverArquivo(dadosArquivoCodificado,substituirCaractere(dicionario, dadosArquivo.toCharArray()), caminhoArquivo);
-
+	}
+	/*---------------------------------------------------------------------------------*/
+	
+	public void descomprimirArquivo(String caminhoArquivo){
+		String dadosArquivo = lerArquivo(caminhoArquivo);
+		String traducao = traduzirCodigo(dadosArquivo);
+		escreverArquivo(traducao.getBytes(), caminhoArquivo);
 	}
 
 	/**
@@ -238,7 +259,7 @@ public class Controller {
 	 * @param dadosArquivo - Os dados lidos do arquivo.
 	 * @return dadosArquivoCodificado - String com a substituição dos caracteres.
 	 */
-	public byte[] substituirCaractere(String[] dicionario, char[] dadosArquivo){
+	/*public byte[] substituirCaractere(String[] dicionario, char[] dadosArquivo){
 
 		StringBuffer dadosArquivoCodificado = new StringBuffer();
 		for(int i = 0; i < dadosArquivo.length; i++){
@@ -273,5 +294,37 @@ public class Controller {
 		}
 
 		return dadosByte;
+	}*/
+
+
+	private String traduzirCodigo(String dadosArquivo) {
+		char[] dicionario = recuperarDicionario(dadosArquivo);
+		String texto = dadosArquivo.substring(dadosArquivo.indexOf(")))"), dadosArquivo.length());
+		BitSet textoBits = BitSet.valueOf(texto.getBytes());
+		String traducao = "";
+		
+		
+		
+		String auxTrad = "";
+		for(int i =0; i< texto.getBytes().length; i++){
+			if(textoBits.get(i)){
+				auxTrad+= '1';
+			}else{
+				auxTrad+= '0';
+			}
+			
+		}
+		return null;
+	}
+
+	private char[] recuperarDicionario(String dadosArquivo) {
+		byte[] dicionarioTxt = (dadosArquivo.substring(0, dadosArquivo.indexOf(")))"))).getBytes();
+		char[] dicionario = new char[NUM];
+		
+		for(int i = 0; i < dicionarioTxt.length; i += 2){
+			dicionario[dicionarioTxt[i+1]] = (char)dicionarioTxt[i];
+		}
+		return dicionario;
+		
 	}
 }
