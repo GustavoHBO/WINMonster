@@ -8,7 +8,7 @@ import org.junit.Test;
 import controller.Controller;
 
 public class SubstituirCaractereTest {
-	
+
 	private Controller controller;
 
 	@Before
@@ -21,16 +21,18 @@ public class SubstituirCaractereTest {
 		String[] str = new String[256];
 		str[97] = "00";
 		str[98] = "111";
+
+		String dadosArquivo = "abb";
 		
-		String dadosArquivo = "ab";
-		byte[] a;
-		a = controller.substituirCaractere(str, dadosArquivo.toCharArray());
+		String codigo = "11011100111111111000";
 		
+		int[] array = controller.substituirCaractere(codigo);
 		
-		
-		for(int i = 0; i < a.length; i++){
-			System.out.println(a[i]);
+		for(int a : array){
+			System.out.println(a);
 		}
+
+		
 	}
 
 }

@@ -40,7 +40,7 @@ public class FilaPrioridade implements IFilaPrioridade {
 	}
 
 	/**
-	 * Método de inserir com prioridade, onde a chave do nó.
+	 * M�todo de inserir com prioridade.
 	 * @see util.IFilaPrioridade#inserir(java.lang.Object)
 	 * @param key - Chave do nó.
 	 * @param object - Objeto a ser armazenado na fila.
@@ -129,7 +129,7 @@ public class FilaPrioridade implements IFilaPrioridade {
 			inserir(celula.getFrequencia(), celula);
 			
 		}
-		primeiro = (ArvoreHuffman)removerInicio();// Não sei porque antes era remover inicio.
+		primeiro = (ArvoreHuffman)removerInicio();
 		return primeiro;
 	}
 	

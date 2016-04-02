@@ -168,25 +168,33 @@ public class Controller {
 	 * @param nomeArquivo - Nome do arquivo a ser gravado.
 	 * @param caminhoArquivo - Caminho ao qual o arquivo será armazenado.
 	 */
-	public static void escreverArquivo(String dicionario, byte[] dadosArquivoCodificado,  String caminhoArquivo){
+	public static void escreverArquivo(String dicionario, int[] dadosArquivoCodificado,  String caminhoArquivo){
 
 		FileOutputStream writeStream = null;
 		DataOutputStream writeDataStream = null;
+		BufferedWriter bufferWrite = null;
+		FileWriter fileWrite = null;
 		// Aqui é especificado o caminho e o nome do arquivo.
 
 		String nomeCaminho = caminhoArquivo.substring(0, caminhoArquivo.indexOf('.'));
 		nomeCaminho += ".monster";
 		File arquivo = new File(nomeCaminho);//Instância do arquivo.
 
+
 		try {// Ver como vai ser tratado esse tipo de erro.
 			arquivo.createNewFile();//Crio o arquivo no diretório escolhido.
 			writeStream = new FileOutputStream(arquivo);
 			writeDataStream = new DataOutputStream(writeStream);
+			fileWrite = new FileWriter(arquivo);
+			bufferWrite = new BufferedWriter(fileWrite);
 
 			writeDataStream.write(dicionario.getBytes());
-			writeDataStream.write(dadosArquivoCodificado);
-			
 
+			for(int a : dadosArquivoCodificado)
+				//bufferWrite.write(a);
+
+			bufferWrite.close();
+			fileWrite.close();
 			writeDataStream.close();
 			writeStream.close();
 		} catch (IOException e) {
@@ -206,6 +214,8 @@ public class Controller {
 		FilaPrioridade filaFrequencia = criarFilaComFrequencias(frequenciaCaractere);
 		ArvoreHuffman arvoreHuffman = filaFrequencia.gerarArvoreHuffman();
 		String[] dicionario = gerarCodigoHuffman(arvoreHuffman);
+		String dadosCodificados = codificaCaractere(dicionario, dadosArquivo.toCharArray());
+		int[] dadosCodificadosSubstituidos = substituirCaractere(dadosCodificados);
 
 		/*
 		 * Abaixo é criado a String que armazenará o dicionário e o arquivo codificado para escrita.
@@ -226,9 +236,7 @@ public class Controller {
 
 		dicionarioCodificado.append("}}");// Define o fim do dicionário.
 
-		//dadosArquivoCodificado += (substituirCaractere(dicionario, dadosArquivo.toCharArray()));
-
-		escreverArquivo(dicionarioCodificado.toString(),substituirCaractere(dicionario, dadosArquivo.toCharArray()), caminhoArquivo);
+		escreverArquivo(dicionarioCodificado.toString(), dadosCodificadosSubstituidos, caminhoArquivo);
 
 	}
 
@@ -238,39 +246,47 @@ public class Controller {
 	 * @param dadosArquivo - Os dados lidos do arquivo.
 	 * @return dadosArquivoCodificado - String com a substituição dos caracteres.
 	 */
-	public byte[] substituirCaractere(String[] dicionario, char[] dadosArquivo){
+	public String codificaCaractere(String[] dicionario, char[] dadosArquivo){
 
-		String dadosArquivoCodificado = new String();
+		StringBuffer dadosArquivoCodificado = new StringBuffer();
 		for(int i = 0; i < dadosArquivo.length; i++){
-				dadosArquivoCodificado.concat(dicionario[dadosArquivo[i]]);
+			dadosArquivoCodificado.append(dicionario[dadosArquivo[i]]);
 		}
-		int tam = dadosArquivoCodificado.length() / 8;
-		StringBuffer dados = new StringBuffer();
-		byte[] dadosByte; 
-		if(dadosArquivoCodificado.length() % 8 == 0){
-			dadosByte = new byte[tam];
-		}
-		else{
-			dadosByte = new byte[++tam];
-		}
-		StringBuffer string;
-		int pos = 0;
-		if(dadosArquivoCodificado.length() >= 8){
-			for(int i = 0; i != tam; i++){
-				string = new StringBuffer();
-				for(int j = 0; j < 8; j++){
-					string.append(dadosArquivoCodificado.toString().toCharArray()[i]);
-					pos = j;
+		return dadosArquivoCodificado.toString();
+	}
+
+	public int[] substituirCaractere(String dadosCodificados){
+		int[] codigo;
+		int tamanho = dadosCodificados.length() / 8, posF = 0;
+		char[] dadosArray = dadosCodificados.toCharArray();
+		StringBuffer temp;
+		if(dadosCodificados.length() % 8 == 0){
+			codigo = new int[tamanho];
+			for (int i = 0; i < tamanho; i++){
+				temp = new StringBuffer();
+				for(int j = i * 8; j < i * 8 + 8; j++){
+					temp.append(dadosArray[j]);
 				}
-				dadosByte[i] = (byte) Integer.parseInt(string.toString(), 2);
+				codigo[i] = Integer.parseInt(temp.toString(), 2);
 			}
 		}
-		if(dadosArquivoCodificado.length() % 8 != 0){
-			String string2 = dadosArquivoCodificado.substring(pos);
-			dadosByte[tam - 1] = (byte) Integer.parseInt(string2, 2);
-
+		else{
+			int i = 0;
+			codigo = new int[++tamanho];
+			for (i = 0; i < tamanho - 1; i++){
+				temp = new StringBuffer();
+				for(int j = i * 8; j < i * 8 + 8; j++){
+					temp.append(dadosArray[j]);
+				}
+				codigo[i] = Integer.parseInt(temp.toString(), 2);
+			}
+			temp = new StringBuffer();
+			for(i *= 8; i < dadosArray.length; i++){
+				temp.append(dadosArray[i]);
+			}
+			codigo[tamanho - 1] = Integer.parseInt(temp.toString(), 2);
 		}
-
-		return dadosByte;
+		System.out.println(codigo.length);
+		return codigo;
 	}
 }
