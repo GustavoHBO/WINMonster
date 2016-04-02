@@ -1,8 +1,5 @@
 package controller;
 
-
-
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
@@ -56,9 +53,9 @@ public class Controller {
 		int[] frequencias = new int[NUM];
 		char[] caracteres = texto.toCharArray();
 
-		for (int i = 0; i < caracteres.length; i++)
+		for (int i = 0; i < caracteres.length; i++){
 			frequencias[caracteres[i]]++;
-
+		}
 		return frequencias;
 	}
 	/*---------------------------------------------------------------------------------*/
@@ -91,7 +88,7 @@ public class Controller {
 	public static void escreverCodigo(String[] dicionario, String texto){
 		String txtCompact = "";
 
-		for(int i =0; i < texto.length(); i++){
+		for(int i = 0; i < texto.length(); i++){
 			txtCompact += dicionario[texto.charAt(i)];
 			System.out.println(texto.charAt(i) + " - " + dicionario[texto.charAt(i)] + " - " + funcaoHash(dicionario[texto.charAt(i)]));
 		}
@@ -109,6 +106,7 @@ public class Controller {
 		//escreverArquivo(compac, "CodigoCompactado", "");
 
 	}
+	/*---------------------------------------------------------------------------------*/
 	private static int funcaoHash(String codigo){
 		int numero = 0;
 		for(int i = 0; i< codigo.length(); i++){
@@ -118,7 +116,7 @@ public class Controller {
 		}
 		return numero;
 	}
-
+	/*---------------------------------------------------------------------------------*/
 	private static char[] criarTabelaHash(String[] dicionario) {
 		int i =0;
 		char[] tabelaHash = new char[NUM];
@@ -130,7 +128,7 @@ public class Controller {
 		}
 		return tabelaHash;
 	}
-
+	/*---------------------------------------------------------------------------------*/
 	/**
 	 * Método responsável pela leitura do arquivo e retorna um array dos dados lidos.
 	 * @param arquivo - Nome do arquivo a ser lido.
@@ -161,7 +159,7 @@ public class Controller {
 		}
 		return dados.toString();
 	}
-
+	/*---------------------------------------------------------------------------------*/
 	/**
 	 * Método responsável pela escrita dos arquivos seguindo o algoritmo de Huffman.
 	 * @param arrayCaractere - Array com os códigos dos caracteres.
@@ -175,7 +173,6 @@ public class Controller {
 		BufferedWriter bufferWrite = null;
 		FileWriter fileWrite = null;
 		// Aqui é especificado o caminho e o nome do arquivo.
-
 		String nomeCaminho = caminhoArquivo.substring(0, caminhoArquivo.indexOf('.'));
 		nomeCaminho += ".monster";
 		File arquivo = new File(nomeCaminho);//Instância do arquivo.
@@ -188,10 +185,12 @@ public class Controller {
 			fileWrite = new FileWriter(arquivo);
 			bufferWrite = new BufferedWriter(fileWrite);
 
-			writeDataStream.write(dicionario.getBytes());
+			for(char a : dicionario.toCharArray())
+				writeDataStream.write(a);
 
-			for(int a : dadosArquivoCodificado)
-				//bufferWrite.write(a);
+			for(int a : dadosArquivoCodificado){
+				writeDataStream.write(a);
+			}
 
 			bufferWrite.close();
 			fileWrite.close();
@@ -201,7 +200,7 @@ public class Controller {
 			e.printStackTrace();
 		}
 	}
-
+	/*---------------------------------------------------------------------------------*/
 	/**
 	 * Método responsável pela compressão do arquivo escolhido.
 	 * @param caminhoArquivo - Localização do arquivo.
@@ -239,7 +238,7 @@ public class Controller {
 		escreverArquivo(dicionarioCodificado.toString(), dadosCodificadosSubstituidos, caminhoArquivo);
 
 	}
-
+	/*---------------------------------------------------------------------------------*/
 	/**
 	 * Método que recebe os dados lidos do arquivo e o dicionário e cria o array com os caracteres codificados.
 	 * @param dicionario - Dicionário com os códigos.
@@ -254,7 +253,7 @@ public class Controller {
 		}
 		return dadosArquivoCodificado.toString();
 	}
-
+	/*---------------------------------------------------------------------------------*/
 	public int[] substituirCaractere(String dadosCodificados){
 		int[] codigo;
 		int tamanho = dadosCodificados.length() / 8, posF = 0;
@@ -284,9 +283,10 @@ public class Controller {
 			for(i *= 8; i < dadosArray.length; i++){
 				temp.append(dadosArray[i]);
 			}
+			temp.append("1"); // O número 1 define o fim do documento.
 			codigo[tamanho - 1] = Integer.parseInt(temp.toString(), 2);
 		}
-		System.out.println(codigo.length);
 		return codigo;
 	}
+	/*---------------------------------------------------------------------------------*/
 }

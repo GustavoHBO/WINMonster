@@ -51,10 +51,14 @@ public class WinMonsterIterface {
 		botaoCompactar.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
-				File arquivo = new EscolherArquivo().escolhe();// Ver como vai ficar isso.
+				File arquivo = new EscolherArquivo().escolhe();
 				if(arquivo != null){
 					controller.comprimirArquivo(arquivo.getAbsolutePath());
 				}
+				else{
+					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado", "Aviso", JOptionPane.ERROR_MESSAGE);;
+				}
+
 			}
 		});
 		botaoCompactar.setToolTipText("Escolha o arquivo a ser compactado!");
