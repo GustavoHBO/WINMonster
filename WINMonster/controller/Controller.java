@@ -1,15 +1,9 @@
 package controller;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-
+import Perssistencia.Fachada;
+import exceptions.ArquivoNaoCriadoException;
+import exceptions.ArquivoNaoEncontradoException;
+import exceptions.ArquivoNaoLidoException;
 import util.FilaPrioridade;
 import util.Huffman.ArvoreHuffman;
 import util.Huffman.FolhaHuffman;
@@ -23,7 +17,7 @@ import util.Huffman.FolhaHuffman;
  *
  */
 public class Controller {
-	/*---------------------------------------------------------------------------------*/
+	/*-----------------------------------------------------------------------------------------------------*/
 	private static final int NUM = 256;
 	private static Controller instance = new Controller();
 
@@ -32,23 +26,13 @@ public class Controller {
 	public static Controller getInstance(){
 		if(instance == null)
 			instance = new Controller();
-
 		return instance;
 	}
 
 	public static void zerarSingleton(){
 		instance = new Controller();
 	}
-	/*---------------------------------------------------------------------------------*/
-	public static void compactarTexto(String texto){
-		int[] frequencias = Controller.calcularFrequencia(texto);
-		FilaPrioridade fila = Controller.criarFilaComFrequencias(frequencias);
-		ArvoreHuffman arvore = fila.gerarArvoreHuffman();
-		String[] dicionario = Controller.gerarCodigoHuffman(arvore);
-		Controller.escreverCodigo(dicionario, texto);
-	}
-	/*---------------------------------------------------------------------------------*/
-
+	/*-----------------------------------------------------------------------------------------------------*/
 	public static int[] calcularFrequencia(String texto){
 		int[] frequencias = new int[NUM];
 		char[] caracteres = texto.toCharArray();
@@ -58,7 +42,7 @@ public class Controller {
 		}
 		return frequencias;
 	}
-	/*---------------------------------------------------------------------------------*/
+	/*-----------------------------------------------------------------------------------------------------*/
 
 	public static FilaPrioridade criarFilaComFrequencias(int[] frequencias){
 		FilaPrioridade fila = new FilaPrioridade();
@@ -74,7 +58,7 @@ public class Controller {
 		}
 		return fila;
 	}
-	/*---------------------------------------------------------------------------------*/
+	/*-----------------------------------------------------------------------------------------------------*/
 
 	public static String[] gerarCodigoHuffman(ArvoreHuffman arvore){
 		String[] dicionario = new String[NUM];
@@ -83,30 +67,7 @@ public class Controller {
 
 		return dicionario;
 	}
-	/*---------------------------------------------------------------------------------*/
-
-	public static void escreverCodigo(String[] dicionario, String texto){
-		String txtCompact = "";
-
-		for(int i = 0; i < texto.length(); i++){
-			txtCompact += dicionario[texto.charAt(i)];
-			System.out.println(texto.charAt(i) + " - " + dicionario[texto.charAt(i)] + " - " + funcaoHash(dicionario[texto.charAt(i)]));
-		}
-		//System.out.println(txtCompact);
-		char[] tabela = criarTabelaHash(dicionario);
-		int i=0;
-		String stringTabela = " %";
-		for(char c : tabela){
-			if(c != 0){
-				stringTabela += "/" + i + " - " + c;
-			}
-			i++;
-		}
-		String compac = txtCompact + stringTabela;
-		//escreverArquivo(compac, "CodigoCompactado", "");
-
-	}
-	/*---------------------------------------------------------------------------------*/
+	/*-----------------------------------------------------------------------------------------------------*/
 	private static int funcaoHash(String codigo){
 		int numero = 0;
 		for(int i = 0; i< codigo.length(); i++){
@@ -128,97 +89,30 @@ public class Controller {
 		}
 		return tabelaHash;
 	}
-	/*---------------------------------------------------------------------------------*/
-	/**
-	 * Método responsável pela leitura do arquivo e retorna um array dos dados lidos.
-	 * @param arquivo - Nome do arquivo a ser lido.
-	 * @return dados - Array dos caracteres lidos no arquivo.
-	 */
-
-	public String lerArquivo(String arquivo){
-
-		StringBuffer dados = new StringBuffer();// String onde será armazenada as informações lidas.
-		FileReader arq = null;// Instância do arquivo.
-		BufferedReader buffer = null;// Instância do leitor do arquivo.
-
-
-		try {// Ver como será tratado esse erro.
-			arq = new FileReader(arquivo);
-			buffer = new BufferedReader(arq);
-
-
-			while (buffer.ready()){//Irá ser valido até encontrar o fim do arquivo.
-				dados.append(buffer.readLine());// Lê linha por linha no arquivo e concatena no final da string dados.
-			}
-			buffer.close();// Finalizo o leitor do arquivo.
-			arq.close();// Finalizo o arquivo.
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return dados.toString();
-	}
-	/*---------------------------------------------------------------------------------*/
-	/**
-	 * Método responsável pela escrita dos arquivos seguindo o algoritmo de Huffman.
-	 * @param arrayCaractere - Array com os códigos dos caracteres.
-	 * @param nomeArquivo - Nome do arquivo a ser gravado.
-	 * @param caminhoArquivo - Caminho ao qual o arquivo será armazenado.
-	 */
-	public static void escreverArquivo(String dicionario, int[] dadosArquivoCodificado,  String caminhoArquivo){
-
-		FileOutputStream writeStream = null;
-		DataOutputStream writeDataStream = null;
-		BufferedWriter bufferWrite = null;
-		FileWriter fileWrite = null;
-		// Aqui é especificado o caminho e o nome do arquivo.
-		String nomeCaminho = caminhoArquivo.substring(0, caminhoArquivo.indexOf('.'));
-		nomeCaminho += ".monster";
-		File arquivo = new File(nomeCaminho);//Instância do arquivo.
-
-
-		try {// Ver como vai ser tratado esse tipo de erro.
-			arquivo.createNewFile();//Crio o arquivo no diretório escolhido.
-			writeStream = new FileOutputStream(arquivo);
-			writeDataStream = new DataOutputStream(writeStream);
-			fileWrite = new FileWriter(arquivo);
-			bufferWrite = new BufferedWriter(fileWrite);
-
-			for(char a : dicionario.toCharArray())
-				writeDataStream.write(a);
-
-			for(int a : dadosArquivoCodificado){
-				writeDataStream.write(a);
-			}
-
-			bufferWrite.close();
-			fileWrite.close();
-			writeDataStream.close();
-			writeStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+	
+	
 	/*---------------------------------------------------------------------------------*/
 	/**
 	 * Método responsável pela compressão do arquivo escolhido.
-	 * @param caminhoArquivo - Localização do arquivo.
+	 * @param caminhoArquivo - Localização do arquivo a ser comprimido.
+	 * @throws ArquivoNaoCriadoException - Caso o arquivo compactado não possa ser criado.
+	 * @throws ArquivoNaoLidoException - Caso o arquivo escolhido pelo usuário não possa ser lido.
+	 * @throws ArquivoNaoEncontradoException - Caso o arquivo escolhido pelo usuário não seja encontrado.
 	 */
 
-	public void comprimirArquivo(String caminhoArquivo){
+	public void comprimirArquivo(String caminhoArquivo) throws ArquivoNaoCriadoException, ArquivoNaoEncontradoException, ArquivoNaoLidoException{
 
-		String dadosArquivo = lerArquivo(caminhoArquivo);
-		int[] frequenciaCaractere = calcularFrequencia(dadosArquivo);
-		FilaPrioridade filaFrequencia = criarFilaComFrequencias(frequenciaCaractere);
-		ArvoreHuffman arvoreHuffman = filaFrequencia.gerarArvoreHuffman();
-		String[] dicionario = gerarCodigoHuffman(arvoreHuffman);
-		String dadosCodificados = codificaCaractere(dicionario, dadosArquivo.toCharArray());
-		int[] dadosCodificadosSubstituidos = substituirCaractere(dadosCodificados);
+		String dadosArquivo = Fachada.lerArquivo(caminhoArquivo);// Aqui é feita a leitura do arquivo.
+		int[] frequenciaCaractere = calcularFrequencia(dadosArquivo);// Aqui é calculada a frequência de cada caractere do texto lido.
+		FilaPrioridade filaFrequencia = criarFilaComFrequencias(frequenciaCaractere);// Cria a fila de prioridade onde a frequência é considerada a chave.
+		ArvoreHuffman arvoreHuffman = filaFrequencia.gerarArvoreHuffman();// Cria a árvore de Huffman.
+		String[] dicionario = gerarCodigoHuffman(arvoreHuffman);// Aqui é criado o dicionário para cada caractere do texto lido.
+		String dadosCodificados = codificaCaractere(dicionario, dadosArquivo.toCharArray());// A partir do dicionário é criado o arquivo codificado.
+		int[] dadosCodificadosSubstituidos = substituirCaractere(dadosCodificados);// Aqui o código é transformado em um array de inteiro para ocupar pouco espaço.
 
 		/*
 		 * Abaixo é criado a String que armazenará o dicionário e o arquivo codificado para escrita.
-		 * O tamanho é definido como a soma do tamanho da array de dados + o tamanho do dicionario + dois
+		 * O tamanho é definido como a soma do tamanho da array de dados + o tamanho do dicionário + dois
 		 * caracteres que servirão para definir o inicio e o fim do dicionário.
 		 */
 		StringBuffer dicionarioCodificado = new StringBuffer();
@@ -227,18 +121,17 @@ public class Controller {
 
 		for(int i = 0; i < dicionario.length; i++){
 			if(dicionario[i] != null){
-
-				dicionarioCodificado.append(dicionario[i]);
-				dicionarioCodificado.append((char)i);
+				dicionarioCodificado.append(dicionario[i]);//Aqui é armazenado o código do byte correspondente ao caractere.
+				dicionarioCodificado.append((char)i);// Aqui é escrito o caractere para poder reescrever o arquivo novamente.
 			}
 		}
 
 		dicionarioCodificado.append("}}");// Define o fim do dicionário.
 
-		escreverArquivo(dicionarioCodificado.toString(), dadosCodificadosSubstituidos, caminhoArquivo);
+		Fachada.escreverArquivo(dicionarioCodificado.toString(), dadosCodificadosSubstituidos, caminhoArquivo);
 
 	}
-	/*---------------------------------------------------------------------------------*/
+	/*-----------------------------------------------------------------------------------------------------*/
 	/**
 	 * Método que recebe os dados lidos do arquivo e o dicionário e cria o array com os caracteres codificados.
 	 * @param dicionario - Dicionário com os códigos.
@@ -253,10 +146,10 @@ public class Controller {
 		}
 		return dadosArquivoCodificado.toString();
 	}
-	/*---------------------------------------------------------------------------------*/
+	/*-----------------------------------------------------------------------------------------------------*/
 	public int[] substituirCaractere(String dadosCodificados){
 		int[] codigo;
-		int tamanho = dadosCodificados.length() / 8, posF = 0;
+		int tamanho = dadosCodificados.length() / 8;
 		char[] dadosArray = dadosCodificados.toCharArray();
 		StringBuffer temp;
 		if(dadosCodificados.length() % 8 == 0){
@@ -288,5 +181,5 @@ public class Controller {
 		}
 		return codigo;
 	}
-	/*---------------------------------------------------------------------------------*/
+	/*-----------------------------------------------------------------------------------------------------*/
 }

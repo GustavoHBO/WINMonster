@@ -70,8 +70,6 @@ public class InterfaceGrafica {
 		}*/
 		
 		
-		for(int i = 0; i < 10000; i++){
-			System.out.println((char)i);
-		}
+		System.out.println(Integer.parseInt("110", 2));
 	}
 }

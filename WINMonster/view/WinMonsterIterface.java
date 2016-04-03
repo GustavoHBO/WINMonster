@@ -8,9 +8,11 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import controller.Controller;
+import exceptions.ArquivoNaoCriadoException;
+import exceptions.ArquivoNaoEncontradoException;
+import exceptions.ArquivoNaoLidoException;
 
 public class WinMonsterIterface {
 
@@ -53,7 +55,18 @@ public class WinMonsterIterface {
 			public void actionPerformed(ActionEvent e){
 				File arquivo = new EscolherArquivo().escolhe();
 				if(arquivo != null){
-					controller.comprimirArquivo(arquivo.getAbsolutePath());
+					try {
+						controller.comprimirArquivo(arquivo.getAbsolutePath());
+					} catch (ArquivoNaoCriadoException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (ArquivoNaoEncontradoException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (ArquivoNaoLidoException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 				else{
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado", "Aviso", JOptionPane.ERROR_MESSAGE);;
