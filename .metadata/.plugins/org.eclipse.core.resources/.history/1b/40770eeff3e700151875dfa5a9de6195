@@ -1,5 +1,0 @@
-package util.Huffman.copy;
-
-public class FolhaHuffman extends ArvoreHuffman{
-
-}

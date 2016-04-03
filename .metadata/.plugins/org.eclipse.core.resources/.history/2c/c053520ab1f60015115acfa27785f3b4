@@ -1,0 +1,12 @@
+import java.util.BitSet;
+
+public class Principal {
+	public static void main(String[] args) {
+		BitSet bits;
+		String str = "De boa na lagoa, maré bate na rocha e mané cai na proa";
+		byte[] bytes =  str.getBytes();
+		
+		System.out.println(bytes.toString());
+		
+	}
+}

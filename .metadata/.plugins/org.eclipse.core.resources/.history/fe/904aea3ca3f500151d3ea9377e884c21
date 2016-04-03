@@ -1,0 +1,13 @@
+package programaTestes;
+
+public class Principal {
+	public static void main(String[] args) {
+		byte b;
+		b = (byte) 0b00000000;
+		//b += 1<<7;
+		//b += 1<<0;
+		System.out.println(b);
+		
+	}
+
+}

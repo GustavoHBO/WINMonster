@@ -1,0 +1,14 @@
+import java.util.BitSet;
+
+public class Principal {
+	public static void main(String[] args) {
+		
+		String[][] str = {{"De", "boa", "na"},{"DE","BOA","NA"}};
+		String[] strart = {"De", "boa", "na","DE","BOA","NA"};
+		
+		for(String g : strart){
+			System.out.println(g);
+		}
+	
+	}
+}

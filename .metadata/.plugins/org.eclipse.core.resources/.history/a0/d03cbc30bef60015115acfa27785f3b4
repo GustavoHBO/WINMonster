@@ -1,0 +1,14 @@
+import java.util.BitSet;
+
+public class Principal {
+	public static void main(String[] args) {
+		BitSet bits = new BitSet();
+		String[][] str = {{"De", "boa", "na"},{"DE","BOA","NA"}};
+		
+		
+		for(int i = 0; i< str.length; i++){
+			System.out.println(str.hashCode());
+		}
+	
+	}
+}

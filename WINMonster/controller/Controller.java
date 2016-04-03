@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.BitSet;
+import java.util.Scanner;
 
 import util.FilaPrioridade;
 import util.Huffman.ArvoreHuffman;
@@ -106,6 +107,7 @@ public class Controller {
 				dicioCompact += (char)i;
 				aux = transformarEmBits(dicionario[i]).toLongArray();
 				dicioCompact += (char)aux[0];
+				dicioCompact += "*";
 				System.out.println(dicioCompact);
 				
 			}
@@ -191,7 +193,8 @@ public class Controller {
 
 
 			while (buffer.ready()){//Irá ser valido até encontrar o fim do arquivo.
-				dados.append(buffer.readLine());// Lê linha por linha no arquivo e concatena no final da string dados.
+				//dados.append(buffer.readLine());// Lê linha por linha no arquivo e concatena no final da string dados.
+				dados.append((char)(buffer.read()));
 			}
 			buffer.close();// Finalizo o leitor do arquivo.
 			arq.close();// Finalizo o arquivo.
@@ -334,10 +337,9 @@ public class Controller {
 		boolean flag;
 		System.out.println(buff.toString());
 		//System.out.println(buff.reverse().toString());
-		buff = buff.reverse();
-		
+		buff.deleteCharAt(0);
 		while(buff.length() > 0){
-			aux = "";
+			aux = "1";
 			flag = true;
 			
 			while(flag){
@@ -358,6 +360,37 @@ public class Controller {
 	}
 
 	private char[] recuperarDicionario(String dadosArquivo) {
+		char[] dicionario = new char[NUM*NUM];
+		StringBuffer buff = new StringBuffer(dadosArquivo);
+		
+		System.out.println(buff.toString());
+		buff.replace(buff.indexOf(")))"), buff.length(), "");
+		
+		Scanner scan = new Scanner(buff.toString());
+		scan.useDelimiter("\\*");
+		String aux = "";
+		String codigo = "";
+		String aux2;
+		while(scan.hasNext()){
+			aux = scan.next();
+			
+			//aux = buff.substring(0, buff.indexOf("**")-1);
+			
+			//buff.replace(0, buff.indexOf("**") + 1, "");
+			aux2 = "";
+			//if(aux.length() > 1){
+				aux2 += aux.charAt(1);
+			/*}else{
+				aux2 = "\r";
+			}*/
+			System.out.println("Aux:"+ aux + "  Aux2:" + aux2);
+			codigo = transformarBitsEmString(BitSet.valueOf(aux2.getBytes()));
+			dicionario[funcaoHash(codigo)] = aux.charAt(0);
+			System.out.println(dicionario [funcaoHash(codigo)] +" "+ codigo);
+		}
+		scan.close();
+		
+		/*
 		StringBuffer buff = new StringBuffer(dadosArquivo);
 		
 		System.out.println(buff.toString());
@@ -376,15 +409,16 @@ public class Controller {
 			dicionario [funcaoHash(codigo)] = (char)(dicionarioTxt[i]) ;
 			System.out.println(dicionario [funcaoHash(codigo)] +" "+ codigo);
 		}
-		
+		*/
 		return dicionario;
 		
 	}
-
+	/*---------------------------------------------------------------------------------*/
 	private String transformarBitsEmString(BitSet bits) {
 		String stringCod = "";
 		for(int i = 0; i < bits.length(); i++){
-			if(bits.get(bits.length() - i -1)){
+		
+			if(bits.get(i)){
 				
 				stringCod += '1';
 			}else{
@@ -393,6 +427,7 @@ public class Controller {
 			
 		}
 		StringBuffer buff = new StringBuffer(stringCod);
+		//buff.replace(buff.length() -1, buff.length(), "");//novo
 		return buff.reverse().toString();
 	}
 }

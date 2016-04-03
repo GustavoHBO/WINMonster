@@ -1,0 +1,15 @@
+import java.util.BitSet;
+
+public class Principal {
+	public static void main(String[] args) {
+		BitSet bits = new BitSet();
+		String str = "abc";//"De boa na lagoa, maré bate na rocha e mané cai na proa";
+		byte[] bytes =  str.getBytes();
+		bits = BitSet.valueOf(bytes);
+
+		//for(int i = 0; i< bytes.length; i++){
+			System.out.println(bits.toByteArray()[1]);
+		//}
+		
+	}
+}

@@ -1,0 +1,11 @@
+package programaTestes;
+
+public class Principal {
+	public static void main(String[] args) {
+		int b;
+		b = 0b00000000;
+		System.out.println(b);
+		//b = 1<<8;
+	}
+
+}
