@@ -10,37 +10,37 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
-import controller.Controller;
+import controller.ControllerArquivo;
+import controller.ControllerCompactar;
+import controller.ControllerDescompactar;
 
 public class DescompressaoTest {
-	private Controller controller = null;
 	@Before
 	public void setUp() throws Exception {
-		Controller.zerarSingleton();
-		controller = Controller.getInstance();
+		ControllerArquivo.zerarSingleton();
 	}
 	@Test
 	public void test() {
 
-		/*File arquivo = null;
+		File arquivo = null;
 		FileWriter fileWrite = null;
 		BufferedWriter buff = null;
 		
 				
-		/*arquivo = new File("Teste De Descompressao.txt");
+		arquivo = new File("Teste De Descompressao.txt");
 		try {
 			arquivo.createNewFile();
 			fileWrite = new FileWriter(arquivo);
 			buff = new BufferedWriter(fileWrite);
 
-			buff.write("");
+			buff.write("Tá acabando carai!!!!");
 			buff.close();
 			fileWrite.close();
 		} catch (IOException e) {
 			fail();
-		}*/
-
-		controller.descomprimirArquivo("Teste De Compressao.monster");
+		}
+		ControllerCompactar.comprimirArquivo("Teste De Descompressao.txt", "Teste de Descompressao.monster");
+		ControllerDescompactar.descomprimirArquivo("Teste De Descompressao.monster", "Teste de Descompressao.txt");
 
 	}
 }

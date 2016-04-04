@@ -11,15 +11,15 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
-import controller.Controller;
+import controller.ControllerArquivo;
 
 public class LerArquivoTest {
 
-	private Controller controller = null;
+	private ControllerArquivo controller = null;
 	@Before
 	public void setUp() throws Exception {
-		Controller.zerarSingleton();
-		controller = Controller.getInstance();
+		ControllerArquivo.zerarSingleton();
+		controller = ControllerArquivo.getInstance();
 
 	}
 
