@@ -69,10 +69,13 @@ public class Fachada implements SalvarArquivo, LerArquivo {
 			arq = new FileReader(arquivo);
 			buffer = new BufferedReader(arq);
 
-
-			while (buffer.ready()){//Irá ser valido até encontrar o fim do arquivo.
-				dados.append(buffer.readLine());// Lê linha por linha no arquivo e concatena no final da string dados.
+			while(buffer.ready()){
+				dados.append((char)buffer.read());
 			}
+
+//			while (buffer.ready()){//Irá ser valido até encontrar o fim do arquivo.
+//				dados.append(buffer.readLine());// Lê linha por linha no arquivo e concatena no final da string dados.
+//			}
 			buffer.close();// Finalizo o leitor do arquivo.
 			arq.close();// Finalizo o arquivo.
 		} catch (FileNotFoundException e) {

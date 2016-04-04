@@ -147,39 +147,59 @@ public class Controller {
 		return dadosArquivoCodificado.toString();
 	}
 	/*-----------------------------------------------------------------------------------------------------*/
+	
+	/**
+	 * Método responsável por receber os dados codificados e transforma-los em um array de inteiros.
+	 * @param dadosCodificados - Dados do arquivo lido codificado.
+	 * @return codigo - Array com códigos para ser escrito no arquivo.
+	 */
 	public int[] substituirCaractere(String dadosCodificados){
 		int[] codigo;
-		int tamanho = dadosCodificados.length() / 8;
+		int tamanho = (dadosCodificados.length() / 8) + 1;
 		char[] dadosArray = dadosCodificados.toCharArray();
 		StringBuffer temp;
-		if(dadosCodificados.length() % 8 == 0){
+		if(dadosCodificados.length() % 8 == 0){// Caso o arquivo lido seja divisível por 8 não haverá sobra de bits.
 			codigo = new int[tamanho];
-			for (int i = 0; i < tamanho; i++){
+			for (int i = 0; i < tamanho - 1; i++){
 				temp = new StringBuffer();
 				for(int j = i * 8; j < i * 8 + 8; j++){
 					temp.append(dadosArray[j]);
 				}
-				codigo[i] = Integer.parseInt(temp.toString(), 2);
+				codigo[i] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binário para um valor inteiro.
 			}
+			codigo[tamanho-1] = 128;// Adiciono um byte para definir o final do meu arquivo.
 		}
-		else{
+		else{//Caso não seja divisível por 8 haverá sobra de bits, isto tem que ser tratado de forma diferente.
 			int i = 0;
-			codigo = new int[++tamanho];
+			codigo = new int[tamanho];
 			for (i = 0; i < tamanho - 1; i++){
 				temp = new StringBuffer();
 				for(int j = i * 8; j < i * 8 + 8; j++){
 					temp.append(dadosArray[j]);
 				}
-				codigo[i] = Integer.parseInt(temp.toString(), 2);
+				codigo[i] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binário para um valor inteiro.
 			}
 			temp = new StringBuffer();
-			for(i *= 8; i < dadosArray.length; i++){
+			for(i *= 8; i < dadosArray.length; i++){// Aqui é copiado o restante do arquivo.
 				temp.append(dadosArray[i]);
 			}
 			temp.append("1"); // O número 1 define o fim do documento.
-			codigo[tamanho - 1] = Integer.parseInt(temp.toString(), 2);
+			codigo[tamanho - 1] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binário para um valor inteiro.
 		}
 		return codigo;
 	}
 	/*-----------------------------------------------------------------------------------------------------*/
+	
+	/**
+	 * Método responsável por realizar a descompactação dos arquivos
+	 * @param caminhoArquivo - Caminho para o arquivo escolhido.
+	 * @throws ArquivoNaoLidoException - Caso não seja possivel ler o arquivo.
+	 * @throws ArquivoNaoEncontradoException - Caso o arquivo selecionado não seja encontrado.
+	 */
+	
+	public void descompactar(String caminhoArquivo) throws ArquivoNaoEncontradoException, ArquivoNaoLidoException{
+		String dadosCodificados = Fachada.lerArquivo(caminhoArquivo);
+		String dicionario = dadosCodificados.substring(dadosCodificados.indexOf("{{") + 1, dadosCodificados.indexOf("}}"));
+		
+	}
 }
