@@ -11,12 +11,6 @@ import util.Huffman.CelulaHuffman;
  */
 public class FilaPrioridade implements IFilaPrioridade {
 
-	/**
-	 * Método de inserir com prioridade, onde a chave do nó.
-	 * @param key - Chave do nó.
-	 * @param object - Objeto a ser armazenado na fila.
-	 */
-
 	private int quantidadeNo = 0;// Quantidade de nó's da fila.
 	private No first;//Inicio da fila.
 
@@ -56,7 +50,7 @@ public class FilaPrioridade implements IFilaPrioridade {
 			No aux = first;// Recebo a referência para o inicio da fila.
 			No aux2 = null;
 			while(aux != null){
-				if(aux.getKey() > key){// Verifica se a chave do nó é maior que a chave recebida.
+				if(aux.getKey() < key){// Verifica se a chave do nó é maior que a chave recebida.
 					if(aux == first){// Verifica se o nó auxiliar é o primeiro.
 						novo.setNext(first);
 						first = novo;

@@ -14,7 +14,7 @@ import exceptions.ArquivoNaoLidoException;
 
 public class Fachada implements SalvarArquivo, LerArquivo {
 
-	
+
 	/*--------------------------------------------------------------------------------------------------------------*/
 	/**
 	 * Método responsável pela escrita dos arquivos.
@@ -69,13 +69,38 @@ public class Fachada implements SalvarArquivo, LerArquivo {
 			arq = new FileReader(arquivo);
 			buffer = new BufferedReader(arq);
 
+			//			while(buffer.ready()){
+			//				dados.append((char)buffer.read());
+			//			}
+
+			while (buffer.ready()){//Irá ser valido até encontrar o fim do arquivo.
+				dados.append(buffer.readLine());// Lê linha por linha no arquivo e concatena no final da string dados.
+				if(buffer.ready())
+					dados.append("\n");// Adiciono o \n por ter lido a linha
+			}
+			buffer.close();// Finalizo o leitor do arquivo.
+			arq.close();// Finalizo o arquivo.
+		} catch (FileNotFoundException e) {
+			throw new ArquivoNaoEncontradoException();
+		} catch (IOException e) {
+			throw new ArquivoNaoLidoException();
+		}
+		return dados.toString();
+	}
+
+	public static String lerArquivoComprimido(String arquivo) throws ArquivoNaoEncontradoException, ArquivoNaoLidoException{
+		StringBuffer dados = new StringBuffer();// String onde será armazenada as informações lidas.
+		FileReader arq = null;// Instância do arquivo.
+		BufferedReader buffer = null;// Instância do leitor do arquivo.
+
+		try {// Ver como será tratado esse erro.
+			arq = new FileReader(arquivo);
+			buffer = new BufferedReader(arq);
+
 			while(buffer.ready()){
 				dados.append((char)buffer.read());
 			}
 
-//			while (buffer.ready()){//Irá ser valido até encontrar o fim do arquivo.
-//				dados.append(buffer.readLine());// Lê linha por linha no arquivo e concatena no final da string dados.
-//			}
 			buffer.close();// Finalizo o leitor do arquivo.
 			arq.close();// Finalizo o arquivo.
 		} catch (FileNotFoundException e) {

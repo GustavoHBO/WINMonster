@@ -1,5 +1,7 @@
 package controller;
 
+import javax.security.auth.callback.TextOutputCallback;
+
 import Perssistencia.Fachada;
 import exceptions.ArquivoNaoCriadoException;
 import exceptions.ArquivoNaoEncontradoException;
@@ -89,8 +91,8 @@ public class Controller {
 		}
 		return tabelaHash;
 	}
-	
-	
+
+
 	/*---------------------------------------------------------------------------------*/
 	/**
 	 * Método responsável pela compressão do arquivo escolhido.
@@ -121,8 +123,13 @@ public class Controller {
 
 		for(int i = 0; i < dicionario.length; i++){
 			if(dicionario[i] != null){
+				if(dicionarioCodificado.length() != 2){// Só irá adicionar o '-' quando não tiver apenas o "{{".
+					dicionarioCodificado.append('-');//Define uma separação entre um código e o caractere.
+				}
 				dicionarioCodificado.append(dicionario[i]);//Aqui é armazenado o código do byte correspondente ao caractere.
+				dicionarioCodificado.append('-');//Define uma separação entre um código e o caractere.
 				dicionarioCodificado.append((char)i);// Aqui é escrito o caractere para poder reescrever o arquivo novamente.
+
 			}
 		}
 
@@ -147,7 +154,7 @@ public class Controller {
 		return dadosArquivoCodificado.toString();
 	}
 	/*-----------------------------------------------------------------------------------------------------*/
-	
+
 	/**
 	 * Método responsável por receber os dados codificados e transforma-los em um array de inteiros.
 	 * @param dadosCodificados - Dados do arquivo lido codificado.
@@ -155,23 +162,23 @@ public class Controller {
 	 */
 	public int[] substituirCaractere(String dadosCodificados){
 		int[] codigo;
-		int tamanho = (dadosCodificados.length() / 8) + 1;
+		int tamanho = (dadosCodificados.length() / 8);
 		char[] dadosArray = dadosCodificados.toCharArray();
 		StringBuffer temp;
 		if(dadosCodificados.length() % 8 == 0){// Caso o arquivo lido seja divisível por 8 não haverá sobra de bits.
 			codigo = new int[tamanho];
-			for (int i = 0; i < tamanho - 1; i++){
+			for (int i = 0; i < tamanho ; i++){
 				temp = new StringBuffer();
 				for(int j = i * 8; j < i * 8 + 8; j++){
 					temp.append(dadosArray[j]);
 				}
 				codigo[i] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binário para um valor inteiro.
 			}
-			codigo[tamanho-1] = 128;// Adiciono um byte para definir o final do meu arquivo.
+			//codigo[tamanho-1] = 128;// Adiciono um byte para definir o final do meu arquivo.
 		}
 		else{//Caso não seja divisível por 8 haverá sobra de bits, isto tem que ser tratado de forma diferente.
 			int i = 0;
-			codigo = new int[tamanho];
+			codigo = new int[++tamanho];
 			for (i = 0; i < tamanho - 1; i++){
 				temp = new StringBuffer();
 				for(int j = i * 8; j < i * 8 + 8; j++){
@@ -183,23 +190,71 @@ public class Controller {
 			for(i *= 8; i < dadosArray.length; i++){// Aqui é copiado o restante do arquivo.
 				temp.append(dadosArray[i]);
 			}
-			temp.append("1"); // O número 1 define o fim do documento.
+			//temp.append("1"); // O número 1 define o fim do documento.
 			codigo[tamanho - 1] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binário para um valor inteiro.
 		}
 		return codigo;
 	}
 	/*-----------------------------------------------------------------------------------------------------*/
-	
+
 	/**
 	 * Método responsável por realizar a descompactação dos arquivos
 	 * @param caminhoArquivo - Caminho para o arquivo escolhido.
-	 * @throws ArquivoNaoLidoException - Caso não seja possivel ler o arquivo.
+	 * @throws ArquivoNaoLidoException - Caso não seja possível ler o arquivo.
 	 * @throws ArquivoNaoEncontradoException - Caso o arquivo selecionado não seja encontrado.
 	 */
-	
+
 	public void descompactar(String caminhoArquivo) throws ArquivoNaoEncontradoException, ArquivoNaoLidoException{
-		String dadosCodificados = Fachada.lerArquivo(caminhoArquivo);
-		String dicionario = dadosCodificados.substring(dadosCodificados.indexOf("{{") + 1, dadosCodificados.indexOf("}}"));
-		
+		String dadosCodificados = Fachada.lerArquivoComprimido(caminhoArquivo);
+		System.out.println(dadosCodificados);
+		/*
+		 * Aqui é pego o código do caractere e o caractere que corresponde a este código, criando assim o dicionário.
+		 */
+		String[] dicionario = dadosCodificados.substring(dadosCodificados.indexOf("{{") + 2, dadosCodificados.indexOf("}}")).split("-");
+		dadosCodificados = dadosCodificados.substring(dadosCodificados.indexOf("}}") + 2);// Agora pego apenas o arquivo a ser traduzido.
+		StringBuffer textoDecodificado = new StringBuffer();// Onde irá ser armazenado o texto decodificado.
+		String dadosTraduzidos = traduzirCodigo(dadosCodificados);
+		System.out.println(dadosCodificados);
+		System.out.println(dadosTraduzidos);
+		char[] dadosCodificadosArray = dadosCodificados.toCharArray();
+		char[] dadosTraduzidosArray = dadosTraduzidos.toCharArray();
+
+		StringBuffer temp = new StringBuffer();;
+
+		for(int i = 0; i < dadosTraduzidosArray.length; i++){
+			temp.append(dadosTraduzidosArray[i]);
+			for(int j = 0; j < dicionario.length; j += 2){
+				if(dicionario[j].equals(temp.toString())){
+					textoDecodificado.append(dicionario[j + 1]);
+					temp = new StringBuffer();
+					break;
+				}
+			}
+		}
+
+
+
+
+
+
+
+
+		System.out.println(textoDecodificado.toString());
+	}
+
+	public String traduzirCodigo(String dadosCodificados){
+
+		char[] dados = dadosCodificados.toCharArray();
+		StringBuffer dadosTraduzidos = new StringBuffer();
+
+		StringBuffer temp = null;
+		for(int i = 0; i < dados.length; i++){
+			temp = new StringBuffer(Integer.toBinaryString(dados[i]));
+			for(int j = 0; j < 8 - temp.length(); j++){
+				dadosTraduzidos.append("0");
+			}
+			dadosTraduzidos.append(temp.toString());
+		}
+		return dadosTraduzidos.toString();
 	}
 }

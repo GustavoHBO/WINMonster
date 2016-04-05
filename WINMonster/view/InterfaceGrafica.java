@@ -17,15 +17,15 @@ public class InterfaceGrafica {
 
 	public static void main(String[] args) throws ArquivoNaoEncontradoException, ArquivoNaoLidoException{
 
-		JFileChooser chooser = new JFileChooser();
-		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		chooser.setFileFilter(new FileNameExtensionFilter("Images", "monster", "png", "gif", "bmp"));
-		chooser.showOpenDialog(null);
-
-		File file = chooser.getSelectedFile();
-
-		FileInputStream fileInput;
-		DataInputStream dataInput;
+		//		JFileChooser chooser = new JFileChooser();
+		//		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		//		chooser.setFileFilter(new FileNameExtensionFilter("Images", "monster", "png", "gif", "bmp"));
+		//		chooser.showOpenDialog(null);
+		//
+		//		File file = chooser.getSelectedFile();
+		//
+		//		FileInputStream fileInput;
+		//		DataInputStream dataInput;
 
 
 		/*try {
@@ -72,10 +72,49 @@ public class InterfaceGrafica {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
+
+		//		String a = "1111000-a";
+
+		//		String[] b = a.split("-");
+		//		System.out.println(b.length);
+		//		for(String c : b){
+		//			System.out.println(c);
+		//		}
+		//		String b = a.replaceAll("000", "Ai bicha");
+		//		System.out.println(b);
+		//		int a = Integer.parseInt("10111010", 2);
+		//		System.out.println(a);
+		//		System.out.println((char)a);
+		//		
+		//		int b = Integer.parseInt("01110001", 2);
+		//		System.out.println(b);
+		//		System.out.println((char)b);
+		//		
+		//		System.out.println((char)1);
+
+
+		String a = "ºq€";
+		//traduzirCodigo(a);
 		
-		String pa = Fachada.lerArquivo(file.getAbsolutePath());
-		System.out.println(pa);
-		System.out.println(pa.length());
-		
+		System.out.println(a);
+		System.out.println((int)a.toCharArray()[2]);
+
+	}
+	public static String traduzirCodigo(String dadosCodificados){
+
+		char[] dados = dadosCodificados.toCharArray();
+		StringBuffer dadosTraduzidos = new StringBuffer();
+
+		StringBuffer temp = null;
+		for(int i = 0; i < dados.length; i++){
+			temp = new StringBuffer(Integer.toBinaryString(dados[i]));
+			for(int j = 0; j < 8 - temp.length(); j++){
+				dadosTraduzidos.append("0");
+			}
+			dadosTraduzidos.append(temp.toString());
+		}
+		System.out.println(dadosTraduzidos.toString());
+
+		return null;
 	}
 }
