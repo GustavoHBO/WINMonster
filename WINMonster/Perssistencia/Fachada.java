@@ -1,11 +1,11 @@
 package Perssistencia;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import exceptions.ArquivoNaoCriadoException;
@@ -17,66 +17,62 @@ public class Fachada implements SalvarArquivo, LerArquivo {
 
 	/*--------------------------------------------------------------------------------------------------------------*/
 	/**
-	 * Método responsável pela escrita dos arquivos.
-	 * @param dicionario - Dicionário para tradução do arquivo.
+	 * Mï¿½todo responsï¿½vel pela escrita dos arquivos.
+	 * @param dicionario - DicionÃ¡rio para traduÃ§Ã£o do arquivo.
 	 * @param dadosArquivoCodificado - Dados do arquivo codificado.
-	 * @param caminhoArquivo - Caminho ao qual o arquivo será armazenado.
-	 * @throws ArquivoNaoCriadoException - Caso o arquivo não possa ser criado.
+	 * @param caminhoArquivo - Caminho ao qual o arquivo serï¿½ armazenado.
+	 * @throws ArquivoNaoCriadoException - Caso o arquivo nï¿½o possa ser criado.
 	 */
 	public static void escreverArquivo(String dicionario, int[] dadosArquivoCodificado,  String caminhoArquivo) throws ArquivoNaoCriadoException{
 
-		FileOutputStream writeStream = null;
-		DataOutputStream writeDataStream = null;
-		// Aqui é especificado o caminho e o nome do arquivo.
+		FileWriter fileWrite = null;
+		BufferedWriter bufferWrite = null;
+		
+		// Aqui Ã© especificado o caminho e o nome do arquivo.
 		String nomeCaminho = caminhoArquivo.substring(0, caminhoArquivo.lastIndexOf('.'));
 		nomeCaminho += ".monster";
-		File arquivo = new File(nomeCaminho);//Instância do arquivo.
+		File arquivo = new File(nomeCaminho);//InstÃ¢ncia do arquivo.
 
 
 		try {// Ver como vai ser tratado esse tipo de erro.
-			arquivo.createNewFile();//Crio o arquivo no diretório escolhido.
-			writeStream = new FileOutputStream(arquivo);
-			writeDataStream = new DataOutputStream(writeStream);
-
+			arquivo.createNewFile();//Crio o arquivo no diretÃ³rio escolhido.
+			fileWrite = new FileWriter(arquivo);
+			bufferWrite = new BufferedWriter(fileWrite);
+			
 			for(char a : dicionario.toCharArray())
-				writeDataStream.write(a);
+				bufferWrite.write(a);
 
 			for(int a : dadosArquivoCodificado){
-				writeDataStream.write(a);
+				bufferWrite.write(a);
 			}
-			writeDataStream.close();
-			writeStream.close();
+			
+			bufferWrite.close();
+			fileWrite.close();
 		} catch (IOException e) {
-			throw new ArquivoNaoCriadoException();// Caso arquivo não tenha sido criado.
+			throw new ArquivoNaoCriadoException();// Caso arquivo nÃ£o tenha sido criado.
 		}
 	}
 	/*------------------------------------------------------------------------------------------------------------------*/
 	/**
-	 * Método responsável pela leitura do arquivo e retorna uma String com os dados lidos.
-	 * @param arquivo - Diretório do arquivo a ser lido.
+	 * Mï¿½todo responsï¿½vel pela leitura do arquivo e retorna uma String com os dados lidos.
+	 * @param arquivo - Diretï¿½rio do arquivo a ser lido.
 	 * @return dados - String com os caracteres lidos no arquivo.
-	 * @throws ArquivoNaoEncontradoException - Caso o arquivo a ser lido não exista.
-	 * @throws ArquivoNaoLidoException - Caso o arquivo não possa ser lido.
+	 * @throws ArquivoNaoEncontradoException - Caso o arquivo a ser lido nï¿½o exista.
+	 * @throws ArquivoNaoLidoException - Caso o arquivo nï¿½o possa ser lido.
 	 */
 
 	public static String lerArquivo(String arquivo) throws ArquivoNaoEncontradoException, ArquivoNaoLidoException{
 
-		StringBuffer dados = new StringBuffer();// String onde será armazenada as informações lidas.
-		FileReader arq = null;// Instância do arquivo.
-		BufferedReader buffer = null;// Instância do leitor do arquivo.
+		StringBuffer dados = new StringBuffer();// String onde serï¿½ armazenada as informaï¿½ï¿½es lidas.
+		FileReader arq = null;// Instï¿½ncia do arquivo.
+		BufferedReader buffer = null;// Instï¿½ncia do leitor do arquivo.
 
-		try {// Ver como será tratado esse erro.
+		try {// Ver como serï¿½ tratado esse erro.
 			arq = new FileReader(arquivo);
 			buffer = new BufferedReader(arq);
 
-			//			while(buffer.ready()){
-			//				dados.append((char)buffer.read());
-			//			}
-
-			while (buffer.ready()){//Irá ser valido até encontrar o fim do arquivo.
-				dados.append(buffer.readLine());// Lê linha por linha no arquivo e concatena no final da string dados.
-				if(buffer.ready())
-					dados.append("\n");// Adiciono o \n por ter lido a linha
+			while (buffer.ready()){//Irï¿½ ser valido atï¿½ encontrar o fim do arquivo.
+				dados.append((char)buffer.read());// Lï¿½ linha por linha no arquivo e concatena no final da string dados.
 			}
 			buffer.close();// Finalizo o leitor do arquivo.
 			arq.close();// Finalizo o arquivo.
@@ -89,16 +85,18 @@ public class Fachada implements SalvarArquivo, LerArquivo {
 	}
 
 	public static String lerArquivoComprimido(String arquivo) throws ArquivoNaoEncontradoException, ArquivoNaoLidoException{
-		StringBuffer dados = new StringBuffer();// String onde será armazenada as informações lidas.
-		FileReader arq = null;// Instância do arquivo.
-		BufferedReader buffer = null;// Instância do leitor do arquivo.
+		StringBuffer dados = new StringBuffer();// String onde serï¿½ armazenada as informaï¿½ï¿½es lidas.
+		FileReader arq = null;// Instï¿½ncia do arquivo.
+		BufferedReader buffer = null;// Instï¿½ncia do leitor do arquivo.
 
-		try {// Ver como será tratado esse erro.
+		try {// Ver como serï¿½ tratado esse erro.
 			arq = new FileReader(arquivo);
 			buffer = new BufferedReader(arq);
 
 			while(buffer.ready()){
-				dados.append((char)buffer.read());
+				dados.append(buffer.readLine());
+				if(buffer.ready())
+					dados.append('\n');
 			}
 
 			buffer.close();// Finalizo o leitor do arquivo.

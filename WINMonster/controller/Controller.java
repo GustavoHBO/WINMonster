@@ -1,75 +1,70 @@
 package controller;
 
-import javax.security.auth.callback.TextOutputCallback;
-
-import Perssistencia.Fachada;
 import exceptions.ArquivoNaoCriadoException;
 import exceptions.ArquivoNaoEncontradoException;
 import exceptions.ArquivoNaoLidoException;
-import util.FilaPrioridade;
-import util.Huffman.ArvoreHuffman;
-import util.Huffman.FolhaHuffman;
-
+import model.Compactador;
+import model.Descompactador;
 
 /**
- * Classe controller, responsável pelo gerenciamento do programa.
+ * Classe controller, responsÃ¡vel pelo gerenciamento do programa.
  * @author Gustavo Henrique.
  * @author Leonardo Melo.
- * @since 10 de março de 2016.
+ * @since 10 de marï¿½o de 2016.
  *
  */
 public class Controller {
-	/*-----------------------------------------------------------------------------------------------------*/
-	private static final int NUM = 256;
+	
 	private static Controller instance = new Controller();
-
+	/*----------------------------------------------------------------------------------------------------------*/
+	
 	private Controller(){}
-
+	
+	/*----------------------------------------------------------------------------------------------------------*/
+	/**
+	 * SingleTon, retorna uma instância do controller.
+	 */
 	public static Controller getInstance(){
 		if(instance == null)
 			instance = new Controller();
 		return instance;
 	}
-
+	
+	/*----------------------------------------------------------------------------------------------------------*/
+	/**
+	 * Zera a instância existente do controller.
+	 */
 	public static void zerarSingleton(){
 		instance = new Controller();
 	}
-	/*-----------------------------------------------------------------------------------------------------*/
-	public static int[] calcularFrequencia(String texto){
-		int[] frequencias = new int[NUM];
-		char[] caracteres = texto.toCharArray();
 
-		for (int i = 0; i < caracteres.length; i++){
-			frequencias[caracteres[i]]++;
-		}
-		return frequencias;
+	/*-----------------------------------------------------------------------------------------------------*/
+	
+	/**
+	 * Método responsável por compactar o arquivo escolhido.
+	 * @param caminho - Caminho até o arquivo a ser compactado.
+	 * @throws ArquivoNaoCriadoException - Caso o arquivo não possa ser criado.
+	 * @throws ArquivoNaoEncontradoException - Caso o arquivo escolhido não seja encontrado.
+	 * @throws ArquivoNaoLidoException - Caso não tenha sido possível ler o arquivo escolhido.
+	 */
+	public static void compactar(String caminho) throws ArquivoNaoCriadoException, ArquivoNaoEncontradoException, ArquivoNaoLidoException{
+		Compactador.comprimirArquivo(caminho);
 	}
+	
 	/*-----------------------------------------------------------------------------------------------------*/
-
-	public static FilaPrioridade criarFilaComFrequencias(int[] frequencias){
-		FilaPrioridade fila = new FilaPrioridade();
-
-		for(int i = 0; i < frequencias.length; i++){
-			if(frequencias[i] > 0){
-				FolhaHuffman folha = new FolhaHuffman();
-				folha.setFrequencia(frequencias[i]);
-				folha.setInfo((char)i);
-
-				fila.inserir(frequencias[i], folha);
-			}
-		}
-		return fila;
+	
+	/**
+	 * Método responsável por descompactar o arquivo escolhido.
+	 * @param caminho - Caminho até o arquivo a ser descompactado.
+	 * @throws ArquivoNaoLidoException - Caso o arquivo não possa ser lido.
+	 * @throws ArquivoNaoEncontradoException - Caso o arquivo escolhido não seja encontrado.
+	 */
+	public static void descompactar(String caminho) throws ArquivoNaoLidoException, ArquivoNaoEncontradoException{
+		
+		Descompactador.descompactar(caminho);
+		
 	}
-	/*-----------------------------------------------------------------------------------------------------*/
-
-	public static String[] gerarCodigoHuffman(ArvoreHuffman arvore){
-		String[] dicionario = new String[NUM];
-
-		ArvoreHuffman.construirCodigo(dicionario, arvore, "");
-
-		return dicionario;
-	}
-	/*-----------------------------------------------------------------------------------------------------*/
+	
 	private static int funcaoHash(String codigo){
 		int numero = 0;
 		for(int i = 0; i< codigo.length(); i++){
@@ -79,182 +74,20 @@ public class Controller {
 		}
 		return numero;
 	}
-	/*---------------------------------------------------------------------------------*/
-	private static char[] criarTabelaHash(String[] dicionario) {
-		int i =0;
-		char[] tabelaHash = new char[NUM];
-		for(String codigo :dicionario){
-			if(codigo != null){
-				tabelaHash[funcaoHash(codigo)] = (char) i;
-			}
-			i++;
+	
+	
+
+	
+
+	/*public static int converterBinario(String stringBinario){
+
+		int valor = 0;
+		char[] array = stringBinario.toCharArray();
+		
+		for(int i = 7; i != -1; i--){
+			if(array[i] == '1')
+				valor += Math.pow(2, 7 - i);
 		}
-		return tabelaHash;
-	}
-
-
-	/*---------------------------------------------------------------------------------*/
-	/**
-	 * Método responsável pela compressão do arquivo escolhido.
-	 * @param caminhoArquivo - Localização do arquivo a ser comprimido.
-	 * @throws ArquivoNaoCriadoException - Caso o arquivo compactado não possa ser criado.
-	 * @throws ArquivoNaoLidoException - Caso o arquivo escolhido pelo usuário não possa ser lido.
-	 * @throws ArquivoNaoEncontradoException - Caso o arquivo escolhido pelo usuário não seja encontrado.
-	 */
-
-	public void comprimirArquivo(String caminhoArquivo) throws ArquivoNaoCriadoException, ArquivoNaoEncontradoException, ArquivoNaoLidoException{
-
-		String dadosArquivo = Fachada.lerArquivo(caminhoArquivo);// Aqui é feita a leitura do arquivo.
-		int[] frequenciaCaractere = calcularFrequencia(dadosArquivo);// Aqui é calculada a frequência de cada caractere do texto lido.
-		FilaPrioridade filaFrequencia = criarFilaComFrequencias(frequenciaCaractere);// Cria a fila de prioridade onde a frequência é considerada a chave.
-		ArvoreHuffman arvoreHuffman = filaFrequencia.gerarArvoreHuffman();// Cria a árvore de Huffman.
-		String[] dicionario = gerarCodigoHuffman(arvoreHuffman);// Aqui é criado o dicionário para cada caractere do texto lido.
-		String dadosCodificados = codificaCaractere(dicionario, dadosArquivo.toCharArray());// A partir do dicionário é criado o arquivo codificado.
-		int[] dadosCodificadosSubstituidos = substituirCaractere(dadosCodificados);// Aqui o código é transformado em um array de inteiro para ocupar pouco espaço.
-
-		/*
-		 * Abaixo é criado a String que armazenará o dicionário e o arquivo codificado para escrita.
-		 * O tamanho é definido como a soma do tamanho da array de dados + o tamanho do dicionário + dois
-		 * caracteres que servirão para definir o inicio e o fim do dicionário.
-		 */
-		StringBuffer dicionarioCodificado = new StringBuffer();
-
-		dicionarioCodificado.append("{{");// Define o inicio do dicionário.
-
-		for(int i = 0; i < dicionario.length; i++){
-			if(dicionario[i] != null){
-				if(dicionarioCodificado.length() != 2){// Só irá adicionar o '-' quando não tiver apenas o "{{".
-					dicionarioCodificado.append('-');//Define uma separação entre um código e o caractere.
-				}
-				dicionarioCodificado.append(dicionario[i]);//Aqui é armazenado o código do byte correspondente ao caractere.
-				dicionarioCodificado.append('-');//Define uma separação entre um código e o caractere.
-				dicionarioCodificado.append((char)i);// Aqui é escrito o caractere para poder reescrever o arquivo novamente.
-
-			}
-		}
-
-		dicionarioCodificado.append("}}");// Define o fim do dicionário.
-
-		Fachada.escreverArquivo(dicionarioCodificado.toString(), dadosCodificadosSubstituidos, caminhoArquivo);
-
-	}
-	/*-----------------------------------------------------------------------------------------------------*/
-	/**
-	 * Método que recebe os dados lidos do arquivo e o dicionário e cria o array com os caracteres codificados.
-	 * @param dicionario - Dicionário com os códigos.
-	 * @param dadosArquivo - Os dados lidos do arquivo.
-	 * @return dadosArquivoCodificado - String com a substituição dos caracteres.
-	 */
-	public String codificaCaractere(String[] dicionario, char[] dadosArquivo){
-
-		StringBuffer dadosArquivoCodificado = new StringBuffer();
-		for(int i = 0; i < dadosArquivo.length; i++){
-			dadosArquivoCodificado.append(dicionario[dadosArquivo[i]]);
-		}
-		return dadosArquivoCodificado.toString();
-	}
-	/*-----------------------------------------------------------------------------------------------------*/
-
-	/**
-	 * Método responsável por receber os dados codificados e transforma-los em um array de inteiros.
-	 * @param dadosCodificados - Dados do arquivo lido codificado.
-	 * @return codigo - Array com códigos para ser escrito no arquivo.
-	 */
-	public int[] substituirCaractere(String dadosCodificados){
-		int[] codigo;
-		int tamanho = (dadosCodificados.length() / 8);
-		char[] dadosArray = dadosCodificados.toCharArray();
-		StringBuffer temp;
-		if(dadosCodificados.length() % 8 == 0){// Caso o arquivo lido seja divisível por 8 não haverá sobra de bits.
-			codigo = new int[tamanho];
-			for (int i = 0; i < tamanho ; i++){
-				temp = new StringBuffer();
-				for(int j = i * 8; j < i * 8 + 8; j++){
-					temp.append(dadosArray[j]);
-				}
-				codigo[i] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binário para um valor inteiro.
-			}
-			//codigo[tamanho-1] = 128;// Adiciono um byte para definir o final do meu arquivo.
-		}
-		else{//Caso não seja divisível por 8 haverá sobra de bits, isto tem que ser tratado de forma diferente.
-			int i = 0;
-			codigo = new int[++tamanho];
-			for (i = 0; i < tamanho - 1; i++){
-				temp = new StringBuffer();
-				for(int j = i * 8; j < i * 8 + 8; j++){
-					temp.append(dadosArray[j]);
-				}
-				codigo[i] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binário para um valor inteiro.
-			}
-			temp = new StringBuffer();
-			for(i *= 8; i < dadosArray.length; i++){// Aqui é copiado o restante do arquivo.
-				temp.append(dadosArray[i]);
-			}
-			//temp.append("1"); // O número 1 define o fim do documento.
-			codigo[tamanho - 1] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binário para um valor inteiro.
-		}
-		return codigo;
-	}
-	/*-----------------------------------------------------------------------------------------------------*/
-
-	/**
-	 * Método responsável por realizar a descompactação dos arquivos
-	 * @param caminhoArquivo - Caminho para o arquivo escolhido.
-	 * @throws ArquivoNaoLidoException - Caso não seja possível ler o arquivo.
-	 * @throws ArquivoNaoEncontradoException - Caso o arquivo selecionado não seja encontrado.
-	 */
-
-	public void descompactar(String caminhoArquivo) throws ArquivoNaoEncontradoException, ArquivoNaoLidoException{
-		String dadosCodificados = Fachada.lerArquivoComprimido(caminhoArquivo);
-		System.out.println(dadosCodificados);
-		/*
-		 * Aqui é pego o código do caractere e o caractere que corresponde a este código, criando assim o dicionário.
-		 */
-		String[] dicionario = dadosCodificados.substring(dadosCodificados.indexOf("{{") + 2, dadosCodificados.indexOf("}}")).split("-");
-		dadosCodificados = dadosCodificados.substring(dadosCodificados.indexOf("}}") + 2);// Agora pego apenas o arquivo a ser traduzido.
-		StringBuffer textoDecodificado = new StringBuffer();// Onde irá ser armazenado o texto decodificado.
-		String dadosTraduzidos = traduzirCodigo(dadosCodificados);
-		System.out.println(dadosCodificados);
-		System.out.println(dadosTraduzidos);
-		char[] dadosCodificadosArray = dadosCodificados.toCharArray();
-		char[] dadosTraduzidosArray = dadosTraduzidos.toCharArray();
-
-		StringBuffer temp = new StringBuffer();;
-
-		for(int i = 0; i < dadosTraduzidosArray.length; i++){
-			temp.append(dadosTraduzidosArray[i]);
-			for(int j = 0; j < dicionario.length; j += 2){
-				if(dicionario[j].equals(temp.toString())){
-					textoDecodificado.append(dicionario[j + 1]);
-					temp = new StringBuffer();
-					break;
-				}
-			}
-		}
-
-
-
-
-
-
-
-
-		System.out.println(textoDecodificado.toString());
-	}
-
-	public String traduzirCodigo(String dadosCodificados){
-
-		char[] dados = dadosCodificados.toCharArray();
-		StringBuffer dadosTraduzidos = new StringBuffer();
-
-		StringBuffer temp = null;
-		for(int i = 0; i < dados.length; i++){
-			temp = new StringBuffer(Integer.toBinaryString(dados[i]));
-			for(int j = 0; j < 8 - temp.length(); j++){
-				dadosTraduzidos.append("0");
-			}
-			dadosTraduzidos.append(temp.toString());
-		}
-		return dadosTraduzidos.toString();
-	}
+		return valor;
+	}*/
 }

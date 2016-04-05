@@ -1,9 +1,11 @@
 package view;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -11,11 +13,14 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import controller.Controller;
 import exceptions.ArquivoNaoCriadoException;
 import exceptions.ArquivoNaoEncontradoException;
 import exceptions.ArquivoNaoLidoException;
+import exceptions.SplashScreenInterrompidaException;
 /**
  * Interface Gráfica da aplicação WinMonster.
  * @author Gustavo Henrique & Leonardo Melo.
@@ -23,7 +28,6 @@ import exceptions.ArquivoNaoLidoException;
  */
 public class WinMonsterIterface {
 
-	private Controller controller =  Controller.getInstance();//Controller irá possibilitar a comunicação da interface com o programa.
 	private JFrame framePrincipal;//Frame principal.
 	private JPanel painelPrincipal;//Painel principal.
 	private JMenuBar menuBar;//Menu da aplicação.
@@ -33,7 +37,27 @@ public class WinMonsterIterface {
 	 * @param args
 	 */
 	public static void main(String args[]){
-		JOptionPane.showMessageDialog(null, "Bem - Vindo ao WinMonster!");
+		try {
+			new SplashScreen(1800).showSplash();// O parâmetro é o tempo do Splash Screen.
+		} catch (SplashScreenInterrompidaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		new WinMonsterIterface().montarTela();
 	}
 
@@ -54,16 +78,13 @@ public class WinMonsterIterface {
 	}
 	/*---------------------------------------------------------------------------------------------------------*/
 	/**
-	 * Método responsável por preparar a splash screen.
-	 */
-	/*---------------------------------------------------------------------------------------------------------*/
-	/**
 	 * Prepara o JFrame.
 	 */
 	private void preparaJanela() {
 		framePrincipal = new JFrame("WinMonster");
 		framePrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		framePrincipal.pack();
+		framePrincipal.setIconImage(new ImageIcon("resources\\comp.png").getImage());// Define a imagem do icone da aplicação.
+		framePrincipal.pack();// Faz com que os componentes do frame ocupem o menor lugar possível.
 		framePrincipal.setVisible(true);
 	}
 	/*---------------------------------------------------------------------------------------------------------*/
@@ -72,6 +93,7 @@ public class WinMonsterIterface {
 	 */
 	private void preparaPainelPrincipal() {
 		painelPrincipal = new JPanel();
+		painelPrincipal.setBackground(new Color(148, 0, 211));// Define a cor roxa.
 		framePrincipal.add(painelPrincipal);
 	}
 	/*---------------------------------------------------------------------------------------------------------*/
@@ -104,7 +126,7 @@ public class WinMonsterIterface {
 				File arquivo = new EscolherArquivo().escolhe();
 				if(arquivo != null){
 					try {
-						controller.comprimirArquivo(arquivo.getAbsolutePath());
+						Controller.compactar(arquivo.getAbsolutePath());
 					} catch (ArquivoNaoCriadoException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -132,7 +154,7 @@ public class WinMonsterIterface {
 				File arquivo = new EscolherArquivo().escolhe();
 				if(arquivo != null){
 					try {
-						controller.descompactar(arquivo.getAbsolutePath());
+						Controller.descompactar(arquivo.getAbsolutePath());
 					} catch (ArquivoNaoEncontradoException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -172,8 +194,45 @@ public class WinMonsterIterface {
 	private void preparaMenuOpcoes(){
 		JMenu menuOpcoes = new JMenu("Opções"); 
 		menuBar.add(menuOpcoes);
-		JMenuItem MIOMudarCor;
-		MIOMudarCor = new JMenuItem("Mudar Cor");
+		JMenu MIOMudarCor;
+		/*Crio as opções de cores*/
+		JMenuItem corPreto, corAzul, corRoxo, corRosa, corVerde;
+		corPreto = new JMenuItem("Preto");
+		corAzul = new JMenuItem("Azul");
+		corRoxo = new JMenuItem("Roxo");
+		corRosa = new JMenuItem("Rosa");
+		corVerde = new JMenuItem("Verde");
+		MIOMudarCor = new JMenu("Mudar Cor");
+
+		/*Cria um ActionListener para todas as opções de cores*/
+		ActionListener listenerMenuItem = new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(arg0.getSource() == corPreto)
+					painelPrincipal.setBackground(Color.BLACK);
+				if(arg0.getSource() == corAzul)
+					painelPrincipal.setBackground(Color.BLUE);
+				if(arg0.getSource() == corRoxo)
+					painelPrincipal.setBackground(new Color(148, 0, 211));
+				if(arg0.getSource() == corRosa)
+					painelPrincipal.setBackground(Color.PINK);
+				if(arg0.getSource() == corVerde)
+					painelPrincipal.setBackground(Color.GREEN);
+			}
+		};
+		/*Adiciona o Listener para poder realizar a troca de cores*/
+		corPreto.addActionListener(listenerMenuItem);
+		corAzul.addActionListener(listenerMenuItem);
+		corRoxo.addActionListener(listenerMenuItem);
+		corRosa.addActionListener(listenerMenuItem);
+		corVerde.addActionListener(listenerMenuItem);
+		/*Adiciona as opções de cores ao JMenu*/
+		MIOMudarCor.add(corPreto);
+		MIOMudarCor.add(corAzul);
+		MIOMudarCor.add(corRoxo);
+		MIOMudarCor.add(corRosa);
+		MIOMudarCor.add(corVerde);
 		menuOpcoes.add(MIOMudarCor);
 	}
 	/*---------------------------------------------------------------------------------------------------------*/
@@ -196,7 +255,7 @@ public class WinMonsterIterface {
 				File arquivo = new EscolherArquivo().escolhe();
 				if(arquivo != null){
 					try {
-						controller.comprimirArquivo(arquivo.getAbsolutePath());
+						Controller.compactar(arquivo.getAbsolutePath());
 					} catch (ArquivoNaoCriadoException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -230,7 +289,7 @@ public class WinMonsterIterface {
 				File arquivo = new EscolherArquivo().escolhe();
 				if(arquivo != null){
 					try {
-						controller.descompactar(arquivo.getAbsolutePath());
+						Controller.descompactar(arquivo.getAbsolutePath());
 					} catch (ArquivoNaoEncontradoException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -277,7 +336,6 @@ public class WinMonsterIterface {
 			public void actionPerformed(ActionEvent evento) {
 				System.exit(0);
 			}
-
 		});
 		botaoSair.setMnemonic('s');// Define o atalho alt + s.
 		botaoSair.setToolTipText("Sai da aplicação! (Alt + S)");

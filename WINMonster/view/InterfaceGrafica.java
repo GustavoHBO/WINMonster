@@ -1,13 +1,7 @@
 package view;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.ObjectOutputStream;
 
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import Perssistencia.Fachada;
 import exceptions.ArquivoNaoEncontradoException;
 import exceptions.ArquivoNaoLidoException;
 
@@ -93,12 +87,14 @@ public class InterfaceGrafica {
 		//		System.out.println((char)1);
 
 
-		String a = "ºq€";
-		//traduzirCodigo(a);
+//		String a = "ºq€";
+//		//traduzirCodigo(a);
+//		
+//		System.out.println(a);
+		System.out.println((char)63);
+		System.out.println((int)'?');
 		
-		System.out.println(a);
-		System.out.println((int)a.toCharArray()[2]);
-
+		
 	}
 	public static String traduzirCodigo(String dadosCodificados){
 
@@ -116,5 +112,16 @@ public class InterfaceGrafica {
 		System.out.println(dadosTraduzidos.toString());
 
 		return null;
+	}
+	public static int converterBinario(String stringBinario){
+
+		int valor = 0;
+		char[] array = stringBinario.toCharArray();
+		
+		for(int i = 7; i != -1; i--){
+			if(array[i] == '1')
+				valor += Math.pow(2, 7 - i);
+		}
+		return valor;
 	}
 }
