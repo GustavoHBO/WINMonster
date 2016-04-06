@@ -26,19 +26,17 @@ public class Descompactador {
 		/*
 		 * Aqui � pego o c�digo do caractere e o caractere que corresponde a este c�digo, criando assim o dicionário.
 		 */
-//		String[] dicionario = dadosCodificados.substring(dadosCodificados.indexOf("{{") + 2, dadosCodificados.indexOf("}}")).split("-");
-		char[] dicionario = recuperarDicionario(dadosCodificados);
-//		dadosCodificados = dadosCodificados.substring(dadosCodificados.indexOf("}}") + 2);// Agora pego apenas o arquivo a ser traduzido.
-		dadosCodificados = dadosCodificados.substring(dadosCodificados.indexOf(")))") + 3);
+		String[] dicionario = dadosCodificados.substring(dadosCodificados.indexOf("{{") + 2, dadosCodificados.indexOf("}}")).split("-");
+		dadosCodificados = dadosCodificados.substring(dadosCodificados.indexOf("}}") + 2);// Agora pego apenas o arquivo a ser traduzido.
 		StringBuffer textoDecodificado = new StringBuffer();// Onde ir� ser armazenado o texto decodificado.
 		String dadosStringBinario = converterStringBinario(dadosCodificados);
 		
-		String traducao = traduzirCodigo(dicionario, dadosStringBinario);
-//		char[] dadosTraduzidosArray = dadosTraduzidos.toCharArray();
+		//String traducao = traduzirCodigo(dicionario, dadosStringBinario);
+		char[] dadosTraduzidosArray = dadosStringBinario.toCharArray();
 
-		//StringBuffer temp = new StringBuffer();
+		StringBuffer temp = new StringBuffer();
 		
-		/*for(int i = 0; i < dadosTraduzidosArray.length; i++){
+		for(int i = 0; i < dadosTraduzidosArray.length; i++){
 			temp.append(dadosTraduzidosArray[i]);
 			for(int j = 0; j < dicionario.length; j += 2){
 				if(dicionario[j].equals(temp.toString())){
@@ -47,9 +45,9 @@ public class Descompactador {
 					break;
 				}
 			}
-		}*/
-//		System.out.println(textoDecodificado.toString());
-		System.out.println(traducao);
+		}
+		System.out.println(textoDecodificado.toString());
+		//System.out.println(traducao);
 	}
 	private static String traduzirCodigo(char[] dicionario, String dadosStringBinario) {
 		String traducao = "";
@@ -127,6 +125,9 @@ public class Descompactador {
 				dadosTraduzidos.append("0");
 			}
 			dadosTraduzidos.append(temp.toString());
+			if(i + 1 == dados.length){
+				System.out.println(temp.toString());
+			}
 		}
 		return dadosTraduzidos.toString();
 	}

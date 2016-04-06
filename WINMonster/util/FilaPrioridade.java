@@ -50,7 +50,7 @@ public class FilaPrioridade implements IFilaPrioridade {
 			No aux = first;// Recebo a referência para o inicio da fila.
 			No aux2 = null;
 			while(aux != null){
-				if(aux.getKey() < key){// Verifica se a chave do nó é maior que a chave recebida.
+				if(aux.getKey() > key){// Verifica se a chave do nó é maior que a chave recebida.
 					if(aux == first){// Verifica se o nó auxiliar é o primeiro.
 						novo.setNext(first);
 						first = novo;

@@ -28,6 +28,7 @@ public class Compactador {
 		FilaPrioridade filaFrequencia = criarFilaComFrequencias(frequenciaCaractere);// Cria a fila de prioridade onde a frequência � considerada a chave.
 		ArvoreHuffman arvoreHuffman = filaFrequencia.gerarArvoreHuffman();// Cria a �rvore de Huffman.
 		String[] dicionario = gerarCodigoHuffman(arvoreHuffman);// Aqui � criado o dicionário para cada caractere do texto lido.
+		
 		String dadosCodificados = codificaCaractere(dicionario, dadosArquivo.toCharArray());// A partir do dicionário � criado o arquivo codificado.
 		int[] dadosCodificadosSubstituidos = substituirCaractere(dadosCodificados);// Aqui o c�digo � transformado em um array de inteiro para ocupar pouco espa�o.
 		String dicionarioCodificado = codificarDicionario(dicionario);
@@ -35,50 +36,31 @@ public class Compactador {
 
 	}
 	/*-----------------------------------------------------------------------------------------------------*/
-	//	private static String codificarDicionario(String[] dicionario) {
-	//		/*
-	//		 * Abaixo � criado a String que armazenar� o dicionário e o arquivo codificado para escrita.
-	//		 * O tamanho � definido como a soma do tamanho da array de dados + o tamanho do dicionário + dois
-	//		 * caracteres que servir�o para definir o inicio e o fim do dicionário.
-	//		 */
-	//		StringBuffer dicionarioCodificado = new StringBuffer();
-	//
-	//		dicionarioCodificado.append("{{");// Define o inicio do dicionário.
-	//
-	//		for(int i = 0; i < dicionario.length; i++){
-	//			if(dicionario[i] != null){
-	//				if(dicionarioCodificado.length() != 2){// S� ir� adicionar o '-' quando n�o tiver apenas o "{{".
-	//					dicionarioCodificado.append('-');//Define uma separa��o entre um c�digo e o caractere.
-	//				}
-	//				dicionarioCodificado.append(dicionario[i]);//Aqui � armazenado o c�digo do byte correspondente ao caractere.
-	//				dicionarioCodificado.append('-');//Define uma separa��o entre um c�digo e o caractere.
-	//				dicionarioCodificado.append((char)i);// Aqui � escrito o caractere para poder reescrever o arquivo novamente.
-	//
-	//			}
-	//		}
-	//
-	//		dicionarioCodificado.append("}}");// Define o fim do dicionário.
-	//		return dicionarioCodificado.toString();
-	//	}
-	private static String codificarDicionario(String[] dicionario) {
-		String dicioCompact = "";
-		long aux;
-
-		for(int i =0; i < dicionario.length ; i++){
-			if(dicionario[i] != null){
-
-				dicioCompact += (char)i;
-				//aux = transformarEmBits(dicionario[i]).toLongArray();
-				aux = Integer.parseInt('1' +dicionario[i], 2);
-				dicioCompact += (char)aux;
-				dicioCompact += (char)0b1;
-
+		private static String codificarDicionario(String[] dicionario) {
+			/*
+			 * Abaixo � criado a String que armazenar� o dicionário e o arquivo codificado para escrita.
+			 * O tamanho � definido como a soma do tamanho da array de dados + o tamanho do dicionário + dois
+			 * caracteres que servir�o para definir o inicio e o fim do dicionário.
+			 */
+			StringBuffer dicionarioCodificado = new StringBuffer();
+	
+			dicionarioCodificado.append("{{");// Define o inicio do dicionário.
+	
+			for(int i = 0; i < dicionario.length; i++){
+				if(dicionario[i] != null){
+					if(dicionarioCodificado.length() != 2){// S� ir� adicionar o '-' quando n�o tiver apenas o "{{".
+						dicionarioCodificado.append('-');//Define uma separa��o entre um c�digo e o caractere.
+					}
+					dicionarioCodificado.append(dicionario[i]);//Aqui � armazenado o c�digo do byte correspondente ao caractere.
+					dicionarioCodificado.append('-');//Define uma separa��o entre um c�digo e o caractere.
+					dicionarioCodificado.append((char)i);// Aqui � escrito o caractere para poder reescrever o arquivo novamente.
+	
+				}
 			}
+	
+			dicionarioCodificado.append("}}");// Define o fim do dicionário.
+			return dicionarioCodificado.toString();
 		}
-		System.out.println(dicioCompact);
-		dicioCompact += ")))";
-		return dicioCompact;
-	}
 	/*-----------------------------------------------------------------------------------------------------*/
 	public static int[] calcularFrequencia(String texto){
 		int[] frequencias = new int[NUM];
