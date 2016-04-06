@@ -13,6 +13,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -172,7 +173,6 @@ public class WinMonsterIterface {
 		menuArquivo.addSeparator();
 		MIASair = new JMenuItem("Sair");
 		MIASair.addActionListener(new ActionListener(){
-
 			@Override
 			public void actionPerformed(ActionEvent evento) {
 				System.exit(0);
@@ -235,8 +235,47 @@ public class WinMonsterIterface {
 	 */
 	private void preparaMenuAjuda(){
 		JMenu menuAjuda = new JMenu("Ajuda");
+		
+		JMenuItem menuAtalho = new JMenuItem("Atalhos");
+		menuAtalho.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				preparaJLabelAtalho();
+			}
+		});
+		
+		menuAjuda.add(menuAtalho);
 		menuBar.add(menuAjuda);
+	}/*---------------------------------------------------------------------------------------------------------*/
+	
+	public void preparaJLabelAtalho(){
+		JTable table = new JTable();
+		JFrame frameAtalho = new JFrame("Atalho");
+		frameAtalho.setIconImage(new ImageIcon("resources\\comp.png").getImage());
+		frameAtalho.pack();
+		frameAtalho.setSize(400, 200);
+		JPanel paneAtalho = new JPanel();
+		paneAtalho.setBackground(new Color(148, 0, 211));
+		table.setModel(new javax.swing.table.DefaultTableModel(
+			new Object[][]{},
+			new String[]{"Função", "Atalho"}
+		));
+		
+		javax.swing.table.DefaultTableModel dtm = (javax.swing.table.DefaultTableModel)table.getModel();
+		dtm.addRow(new Object[]{"Função", "Atalho"});
+		dtm.addRow(new Object[]{"Comprimir", "Alt + C"});
+		dtm.addRow(new Object[]{"Descompactar", "Alt + D"});
+		dtm.addRow(new Object[]{"Verificar Integridade", "Alt + V"});
+		dtm.addRow(new Object[]{"Sair", "Alt + S"});
+		table.setVisible(true);
+		
+		paneAtalho.add(table);
+		paneAtalho.setVisible(true);
+		frameAtalho.add(paneAtalho);
+		frameAtalho.setVisible(true);
 	}
+	
+	
 	/*---------------------------------------------------------------------------------------------------------*/
 	/**
 	 * Prepara o botão Compactar do JPanel.
@@ -343,5 +382,5 @@ public class WinMonsterIterface {
 		framePrincipal.setVisible(true);
 	}
 	/*---------------------------------------------------------------------------------------------------------*/
-
+	
 }

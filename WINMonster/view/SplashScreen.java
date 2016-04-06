@@ -14,6 +14,7 @@ import javax.swing.JWindow;
 
 import exceptions.SplashScreenInterrompidaException;
 
+@SuppressWarnings("serial")
 public class SplashScreen extends JWindow{
 
 	private int duracao;

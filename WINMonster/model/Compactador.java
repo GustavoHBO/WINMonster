@@ -135,7 +135,7 @@ public class Compactador {
 				codigo[i] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binï¿½rio para um valor inteiro.
 			}
 		}
-		else{//Caso nï¿½o seja divisï¿½vel por 8 haverï¿½ sobra de bits, isto tem que ser tratado de forma diferente.
+		else{//Caso não seja divisível por 8 haverá sobra de bits, isto tem que ser tratado de forma diferente.
 			int i = 0;
 			codigo = new int[++tamanho];
 			for (i = 0; i < tamanho - 1; i++){
@@ -146,8 +146,13 @@ public class Compactador {
 				codigo[i] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binï¿½rio para um valor inteiro.
 			}
 			temp = new StringBuffer();
-			for(i *= 8; i < dadosArray.length; i++){// Aqui ï¿½ copiado o restante do arquivo.
-				temp.append(dadosArray[i]);
+			int j = i * 8;
+			for(; j < dadosArray.length; j++){// Aqui ï¿½ copiado o restante do arquivo.
+				temp.append(dadosArray[j]);
+			}
+			j = j - i;
+			for(; j < 8; j++){
+				
 			}
 			codigo[tamanho - 1] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binï¿½rio para um valor inteiro.
 		}

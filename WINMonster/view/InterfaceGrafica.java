@@ -1,6 +1,8 @@
 package view;
 
-import java.io.ObjectOutputStream;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTable;
 
 import exceptions.ArquivoNaoEncontradoException;
 import exceptions.ArquivoNaoLidoException;
@@ -85,11 +87,36 @@ public class InterfaceGrafica {
 		//		System.out.println((char)b);
 		//		
 		//		System.out.println((char)1);
+		//
+		//		JFrame frame = new JFrame();
+		//		frame.setSize(300, 400);
+		//		
+		//		JPanel panel = new JPanel();
+		//		
+		//		JTable table = new JTable();
+		//		
+		//		table.setModel(new javax.swing.table.DefaultTableModel(
+		//			new Object[][]{}, 
+		//			new String[]{
+		//					"Função", "Atalho"
+		//			}
+		//		));
+		//		javax.swing.table.DefaultTableModel dtm = (javax.swing.table.DefaultTableModel)table.getModel();
+		//		String[] ca = {"Coisa"};
+		//		dtm.addRow(ca);
+		//		dtm.addRow(new Object[]{"Comprimir", "Alt + C"});
+		//		table.setVisible(true);
+		//		 
+		//		panel.setVisible(true);
+		//		panel.add(table);
+		//		frame.setVisible(true);
+		//		frame.add(panel);
+
+		StringBuffer a = new StringBuffer("00000000");
+		a.setCharAt(0, '1');
+		System.out.println(a);
 
 
-		
-		
-		
 	}
 	public static String traduzirCodigo(String dadosCodificados){
 
@@ -112,7 +139,7 @@ public class InterfaceGrafica {
 
 		int valor = 0;
 		char[] array = stringBinario.toCharArray();
-		
+
 		for(int i = 7; i != -1; i--){
 			if(array[i] == '1')
 				valor += Math.pow(2, 7 - i);
