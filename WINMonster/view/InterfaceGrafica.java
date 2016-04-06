@@ -87,12 +87,7 @@ public class InterfaceGrafica {
 		//		System.out.println((char)1);
 
 
-//		String a = "ºq€";
-//		//traduzirCodigo(a);
-//		
-//		System.out.println(a);
-		System.out.println((char)63);
-		System.out.println((int)'?');
+		
 		
 		
 	}

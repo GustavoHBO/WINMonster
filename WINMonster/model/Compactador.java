@@ -29,6 +29,8 @@ public class Compactador {
 		ArvoreHuffman arvoreHuffman = filaFrequencia.gerarArvoreHuffman();// Cria a �rvore de Huffman.
 		String[] dicionario = gerarCodigoHuffman(arvoreHuffman);// Aqui � criado o dicionário para cada caractere do texto lido.
 		
+		
+		
 		String dadosCodificados = codificaCaractere(dicionario, dadosArquivo.toCharArray());// A partir do dicionário � criado o arquivo codificado.
 		int[] dadosCodificadosSubstituidos = substituirCaractere(dadosCodificados);// Aqui o c�digo � transformado em um array de inteiro para ocupar pouco espa�o.
 		String dicionarioCodificado = codificarDicionario(dicionario);
