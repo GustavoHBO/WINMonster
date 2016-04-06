@@ -58,8 +58,9 @@ public class Controller {
 	 * @param caminho - Caminho até o arquivo a ser descompactado.
 	 * @throws ArquivoNaoLidoException - Caso o arquivo não possa ser lido.
 	 * @throws ArquivoNaoEncontradoException - Caso o arquivo escolhido não seja encontrado.
+	 * @throws ArquivoNaoCriadoException - Caso o arquivo não possa ser criado.
 	 */
-	public static void descompactar(String caminho) throws ArquivoNaoLidoException, ArquivoNaoEncontradoException{
+	public static void descompactar(String caminho) throws ArquivoNaoLidoException, ArquivoNaoEncontradoException, ArquivoNaoCriadoException{
 		
 		Descompactador.descompactar(caminho);
 		

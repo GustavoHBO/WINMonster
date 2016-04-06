@@ -53,6 +53,37 @@ public class Fachada implements SalvarArquivo, LerArquivo {
 		}
 	}
 	/*------------------------------------------------------------------------------------------------------------------*/
+	
+	/**
+	 * Metodo responsável pela escrita de arquivos em um determinado arquivo.
+	 * @param dados - Dados a serem gravados.
+	 * @param caminho - Diretório até o arquivo a ser gravado.
+	 * @throws ArquivoNaoCriadoException - Caso o arquivo a ser gravado não possa ser criado.
+	 */
+	public static void escreverArquivo(String dados, String caminho) throws ArquivoNaoCriadoException{
+		FileWriter fileWrite = null;
+		BufferedWriter bufferWrite = null;
+		
+		// Aqui Ã© especificado o caminho e o nome do arquivo.
+		File arquivo = new File(caminho);//InstÃ¢ncia do arquivo.
+
+
+		try {// Ver como vai ser tratado esse tipo de erro.
+			arquivo.createNewFile();//Crio o arquivo no diretÃ³rio escolhido.
+			fileWrite = new FileWriter(arquivo);
+			bufferWrite = new BufferedWriter(fileWrite);
+
+			for(int a : dados.toCharArray()){
+				bufferWrite.write(a);
+			}
+			
+			bufferWrite.close();
+			fileWrite.close();
+		} catch (IOException e) {
+			throw new ArquivoNaoCriadoException();// Caso arquivo nÃ£o tenha sido criado.
+		}
+	}
+	/*------------------------------------------------------------------------------------------------------------------*/
 	/**
 	 * Mï¿½todo responsï¿½vel pela leitura do arquivo e retorna uma String com os dados lidos.
 	 * @param arquivo - Diretï¿½rio do arquivo a ser lido.

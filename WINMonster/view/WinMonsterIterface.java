@@ -40,24 +40,21 @@ public class WinMonsterIterface {
 		try {
 			new SplashScreen(1800).showSplash();// O parâmetro é o tempo do Splash Screen.
 		} catch (SplashScreenInterrompidaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "A splashScreen parou de funcionar","ERROR", JOptionPane.ERROR_MESSAGE);
 		}
+		/*Alguns erros a baixo nunca vão ocorrer*/
 		try {
 			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Não foi encontrada a aparencia da aplicação","ERROR", JOptionPane.ERROR_MESSAGE);
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Não foi possivel definir a aparencia", "ERROR", JOptionPane.ERROR_MESSAGE);
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Não foi possivel definir a aparencia", "ERROR", JOptionPane.ERROR_MESSAGE);
 		} catch (UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "A aparencia definida não é suportada", "ERROR", JOptionPane.ERROR_MESSAGE);
 		}
+
 		new WinMonsterIterface().montarTela();
 	}
 
@@ -159,6 +156,9 @@ public class WinMonsterIterface {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (ArquivoNaoLidoException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ArquivoNaoCriadoException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -291,11 +291,11 @@ public class WinMonsterIterface {
 					try {
 						Controller.descompactar(arquivo.getAbsolutePath());
 					} catch (ArquivoNaoEncontradoException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, "O arquivo selecionado não foi encontrado","Arquivo não encontrado", JOptionPane.ERROR_MESSAGE);
 					} catch (ArquivoNaoLidoException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, "O arquivo selecionado não pode set lido(O arquivo pode está protegido)","Arquivo não lido", JOptionPane.ERROR_MESSAGE);
+					} catch (ArquivoNaoCriadoException e) {
+						JOptionPane.showMessageDialog(null, "O arquivo selecionado não foi criado(A pasta pode está protegida)","Arquivo não criado", JOptionPane.ERROR_MESSAGE);
 					}
 					JOptionPane.showMessageDialog(null, "Descompactação Concluida!");
 				}

@@ -10,4 +10,13 @@ public interface SalvarArquivo {
 	 */
 	public static void escreverArquivo(String arg0, int[]arg2, String caminho) {
 	}
+	
+	/**
+	 * Método responsável por gravar o arquivo recebido.
+	 * @param texto - Texto a ser gravado.
+	 * @param caminho - Caminho até o arquivo.
+	 */
+	public static void escreverArquivo(String texto, String caminho){
+		
+	}
 }

@@ -4,13 +4,14 @@ import java.util.BitSet;
 import java.util.Scanner;
 
 import Perssistencia.Fachada;
+import exceptions.ArquivoNaoCriadoException;
 import exceptions.ArquivoNaoEncontradoException;
 import exceptions.ArquivoNaoLidoException;
 
 public class Descompactador {
 
-	
-	
+
+
 	/*-----------------------------------------------------------------------------------------------------*/
 
 	private static final int NUM = 256;
@@ -19,23 +20,25 @@ public class Descompactador {
 	 * @param caminhoArquivo - Caminho para o arquivo escolhido.
 	 * @throws ArquivoNaoLidoException - Caso nÃ£o seja possÃ­vel ler o arquivo.
 	 * @throws ArquivoNaoEncontradoException - Caso o arquivo selecionado nï¿½o seja encontrado.
+	 * @throws ArquivoNaoCriadoException - Caso o arquivo a ser descompactado não possa ser criado.
 	 */
 
-	public static void descompactar(String caminhoArquivo) throws ArquivoNaoLidoException, ArquivoNaoEncontradoException{
+	public static void descompactar(String caminhoArquivo) throws ArquivoNaoLidoException, ArquivoNaoEncontradoException, ArquivoNaoCriadoException{
 		String dadosCodificados = Fachada.lerArquivoComprimido(caminhoArquivo);
 		/*
 		 * Aqui ï¿½ pego o cï¿½digo do caractere e o caractere que corresponde a este cï¿½digo, criando assim o dicionÃ¡rio.
 		 */
+		String extensao = dadosCodificados.substring(0, dadosCodificados.indexOf('.') + 4);
 		String[] dicionario = dadosCodificados.substring(dadosCodificados.indexOf("{{") + 2, dadosCodificados.indexOf("}}")).split("-");
 		dadosCodificados = dadosCodificados.substring(dadosCodificados.indexOf("}}") + 2);// Agora pego apenas o arquivo a ser traduzido.
 		StringBuffer textoDecodificado = new StringBuffer();// Onde irï¿½ ser armazenado o texto decodificado.
 		String dadosStringBinario = converterStringBinario(dadosCodificados);
-		
+
 		//String traducao = traduzirCodigo(dicionario, dadosStringBinario);
 		char[] dadosTraduzidosArray = dadosStringBinario.toCharArray();
 
 		StringBuffer temp = new StringBuffer();
-		
+
 		for(int i = 0; i < dadosTraduzidosArray.length; i++){
 			temp.append(dadosTraduzidosArray[i]);
 			for(int j = 0; j < dicionario.length; j += 2){
@@ -46,8 +49,8 @@ public class Descompactador {
 				}
 			}
 		}
-		System.out.println(textoDecodificado.toString());
-		//System.out.println(traducao);
+		caminhoArquivo = caminhoArquivo.replace(".monster", extensao);
+		Fachada.escreverArquivo(textoDecodificado.toString(), caminhoArquivo);
 	}
 	private static String traduzirCodigo(char[] dicionario, String dadosStringBinario) {
 		String traducao = "";
@@ -57,7 +60,7 @@ public class Descompactador {
 		while(buff.length() > 0){
 			aux = "1";
 			flag = true;
-			
+
 			while(flag){
 				aux += buff.charAt(0);
 				buff.deleteCharAt(0);
@@ -73,19 +76,19 @@ public class Descompactador {
 		System.out.println("Código: " + dadosStringBinario);
 		System.out.println("Tradução: " + traducao);
 		return traducao;
-		
+
 	}
 	/*------------------------------------------------------------------------------------------------------------*/
 	private static char[] recuperarDicionario(String dadosCodificados) {
 		char[] dicionario = new char[NUM*NUM*2];
-		
+
 		StringBuffer buff = new StringBuffer(dadosCodificados);
-		
+
 		System.out.println(buff.toString());
 		buff.replace(buff.indexOf(")))"), buff.length(), "");
-		
+
 		Scanner scan = new Scanner(buff.toString());
-		
+
 		scan.useDelimiter("\\" + (char)0b1);
 		String aux = "";
 		String codigo = "";
@@ -94,15 +97,15 @@ public class Descompactador {
 		int aux2 = 0;
 		while(scan.hasNext()){
 			aux = scan.next();
-						
-			
+
+
 			aux2 = aux.charAt(1); //TESTE
-			
+
 			//codigo = transformarBitsEmString(BitSet.valueOf(aux2));//TESTE
 			codigo = Integer.toBinaryString(aux2);
 			dicionario[funcaoHash(codigo)] = aux.charAt(0);
-			
-			
+
+
 			System.out.println(dicionario [funcaoHash(codigo)] +" "+ codigo +" "+ aux2);
 		}
 		scan.close(); 
