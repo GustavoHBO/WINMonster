@@ -124,17 +124,14 @@ public class WinMonsterIterface {
 				if(arquivo != null){
 					try {
 						Controller.compactar(arquivo.getAbsolutePath());
+						JOptionPane.showMessageDialog(null, "Compactação Concluida!", "Arquivo Compactado", JOptionPane.INFORMATION_MESSAGE);
 					} catch (ArquivoNaoCriadoException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Não foi possível criar o arquivo compactado!", "ERROR", JOptionPane.ERROR_MESSAGE);
 					} catch (ArquivoNaoEncontradoException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, "O arquivo escolhido não foi encontrado", "ERROR", JOptionPane.ERROR_MESSAGE);
 					} catch (ArquivoNaoLidoException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, "O arquivo escolhido não pode ser lido(O arquivo pode esta protegido)", "ERROR", JOptionPane.ERROR_MESSAGE);
 					}
-					JOptionPane.showMessageDialog(null, "Compactação Concluida!");
 				}
 				else{
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado", "Aviso", JOptionPane.ERROR_MESSAGE);;
@@ -152,17 +149,14 @@ public class WinMonsterIterface {
 				if(arquivo != null){
 					try {
 						Controller.descompactar(arquivo.getAbsolutePath());
+						JOptionPane.showMessageDialog(null, "Descompactação Concluida!", "Arquivo Descompactado", JOptionPane.INFORMATION_MESSAGE);
 					} catch (ArquivoNaoEncontradoException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Não foi possível encontrar o arquivo compactado!", "ERROR", JOptionPane.ERROR_MESSAGE);
 					} catch (ArquivoNaoLidoException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Não foi possível abrir o arquivo compactado!", "ERROR", JOptionPane.ERROR_MESSAGE);
 					} catch (ArquivoNaoCriadoException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Não foi possível criar o arquivo descompactado!", "ERROR", JOptionPane.ERROR_MESSAGE);
 					}
-					JOptionPane.showMessageDialog(null, "Descompactação Concluida!");
 				}
 				else{
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado", "Aviso", JOptionPane.ERROR_MESSAGE);;
@@ -256,17 +250,14 @@ public class WinMonsterIterface {
 				if(arquivo != null){
 					try {
 						Controller.compactar(arquivo.getAbsolutePath());
+						JOptionPane.showMessageDialog(null, "Compactação Concluida!", "Arquivo Compactado", JOptionPane.INFORMATION_MESSAGE);
 					} catch (ArquivoNaoCriadoException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Não foi possível criar o arquivo compactado!", "ERROR", JOptionPane.ERROR_MESSAGE);
 					} catch (ArquivoNaoEncontradoException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, "O arquivo escolhido não foi encontrado", "ERROR", JOptionPane.ERROR_MESSAGE);
 					} catch (ArquivoNaoLidoException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, "O arquivo escolhido não pode ser lido(O arquivo pode esta protegido)", "ERROR", JOptionPane.ERROR_MESSAGE);
 					}
-					JOptionPane.showMessageDialog(null, "Compactação Concluida!");
 				}
 				else{
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado", "Aviso", JOptionPane.ERROR_MESSAGE);;
@@ -290,14 +281,14 @@ public class WinMonsterIterface {
 				if(arquivo != null){
 					try {
 						Controller.descompactar(arquivo.getAbsolutePath());
+						JOptionPane.showMessageDialog(null, "Descompactação Concluida!", "Arquivo Descompactado", JOptionPane.INFORMATION_MESSAGE);
 					} catch (ArquivoNaoEncontradoException e) {
-						JOptionPane.showMessageDialog(null, "O arquivo selecionado não foi encontrado","Arquivo não encontrado", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Não foi possível encontrar o arquivo compactado!", "ERROR", JOptionPane.ERROR_MESSAGE);
 					} catch (ArquivoNaoLidoException e) {
-						JOptionPane.showMessageDialog(null, "O arquivo selecionado não pode set lido(O arquivo pode está protegido)","Arquivo não lido", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Não foi possível abrir o arquivo compactado!", "ERROR", JOptionPane.ERROR_MESSAGE);
 					} catch (ArquivoNaoCriadoException e) {
-						JOptionPane.showMessageDialog(null, "O arquivo selecionado não foi criado(A pasta pode está protegida)","Arquivo não criado", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Não foi possível criar o arquivo descompactado!", "ERROR", JOptionPane.ERROR_MESSAGE);
 					}
-					JOptionPane.showMessageDialog(null, "Descompactação Concluida!");
 				}
 				else{
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado", "Aviso", JOptionPane.ERROR_MESSAGE);;
