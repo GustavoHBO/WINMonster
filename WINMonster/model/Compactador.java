@@ -116,8 +116,8 @@ public class Compactador {
 			dadosArquivoCodificado.append(dicionario[dadosArquivo[i]]);
 		}
 		dadosArquivoCodificado.append('1');// Adiciona o 1 para poder definir o final do texto.
-		
-		
+
+
 		while(dadosArquivoCodificado.length() % 8 != 0){//Teste
 			dadosArquivoCodificado.append("0");
 		}
@@ -134,40 +134,14 @@ public class Compactador {
 		int tamanho = (dadosCodificados.length() / 8);
 		char[] dadosArray = dadosCodificados.toCharArray();
 		StringBuffer temp;
-		
-		
-		
-		//if(dadosCodificados.length() % 8 == 0){// Caso o arquivo lido seja divisível por 8 não haveria sobra de bits.
-			codigo = new int[tamanho];
-			for (int i = 0; i < tamanho ; i++){
-				temp = new StringBuffer();
-				for(int j = i * 8; j < i * 8 + 8; j++){
-					temp.append(dadosArray[j]);
-				}
-				codigo[i] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binário para um valor inteiro.
-			}
-		//}
-		/*else{//Caso não seja divisível por 8 haverá sobra de bits, isto tem que ser tratado de forma diferente.
-			int i = 0;
-			System.out.println("Isso não deveria aparecer");
-			codigo = new int[++tamanho];
-			for (i = 0; i < tamanho - 1; i++){
-				temp = new StringBuffer();
-				for(int j = i * 8; j < i * 8 + 8; j++){
-					temp.append(dadosArray[j]);
-				}
-				codigo[i] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binário para um valor inteiro.
-			}
+		codigo = new int[tamanho];
+		for (int i = 0; i < tamanho ; i++){
 			temp = new StringBuffer();
-			int j = i * 8;
-			for(; j < dadosArray.length; j++){// Aqui é copiado o restante do arquivo.
+			for(int j = i * 8; j < i * 8 + 8; j++){
 				temp.append(dadosArray[j]);
 			}
-			for(j = 0; j < 8 - dadosArray.length; j++){
-				temp.append("0");
-			}
-			codigo[tamanho - 1] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binário para um valor inteiro.
-		}*/
+			codigo[i] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binário para um valor inteiro.
+		}
 		return codigo;
 	}
 }

@@ -6,7 +6,7 @@ import javax.swing.JFileChooser;
 
 public class EscolherArquivo {
 
-	public File escolhe() {
+	public static File escolhe() {
 		JFileChooser chooser = new JFileChooser();
 		int retorno = chooser.showOpenDialog(null);
 
