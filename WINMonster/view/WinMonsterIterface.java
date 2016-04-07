@@ -14,8 +14,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import controller.Controller;
 import exceptions.ArquivoNaoCriadoException;
@@ -261,12 +263,21 @@ public class WinMonsterIterface {
 			new String[]{"Função", "Atalho"}
 		));
 		
+		DefaultTableCellRenderer centralizado = new DefaultTableCellRenderer();
+		centralizado.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		table.getColumnModel().getColumn(0).setPreferredWidth(180);
+		table.getColumnModel().getColumn(1).setPreferredWidth(180);
+		table.getColumnModel().getColumn(1).setCellRenderer(centralizado);
 		javax.swing.table.DefaultTableModel dtm = (javax.swing.table.DefaultTableModel)table.getModel();
+		
 		dtm.addRow(new Object[]{"Função", "Atalho"});
 		dtm.addRow(new Object[]{"Comprimir", "Alt + C"});
 		dtm.addRow(new Object[]{"Descompactar", "Alt + D"});
 		dtm.addRow(new Object[]{"Verificar Integridade", "Alt + V"});
 		dtm.addRow(new Object[]{"Sair", "Alt + S"});
+		
+		
 		table.setVisible(true);
 		
 		paneAtalho.add(table);

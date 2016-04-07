@@ -1,6 +1,5 @@
 package model;
 
-import java.util.BitSet;
 import java.util.Scanner;
 
 import Perssistencia.Fachada;
@@ -24,17 +23,16 @@ public class Descompactador {
 	 */
 
 	public static void descompactar(String caminhoArquivo) throws ArquivoNaoLidoException, ArquivoNaoEncontradoException, ArquivoNaoCriadoException{
-		String dadosCodificados = Fachada.lerArquivoComprimido(caminhoArquivo);
+		String dadosCodificados = Fachada.lerArquivo(caminhoArquivo);
 		/*
 		 * Aqui � pego o c�digo do caractere e o caractere que corresponde a este c�digo, criando assim o dicionário.
 		 */
 		String extensao = dadosCodificados.substring(0, dadosCodificados.indexOf('.') + 4);
 		String[] dicionario = dadosCodificados.substring(dadosCodificados.indexOf("{{") + 2, dadosCodificados.indexOf("}}")).split("-");
 		dadosCodificados = dadosCodificados.substring(dadosCodificados.indexOf("}}") + 2);// Agora pego apenas o arquivo a ser traduzido.
+
 		StringBuffer textoDecodificado = new StringBuffer();// Onde ir� ser armazenado o texto decodificado.
 		String dadosStringBinario = converterStringBinario(dadosCodificados);
-
-		//String traducao = traduzirCodigo(dicionario, dadosStringBinario);
 		char[] dadosTraduzidosArray = dadosStringBinario.toCharArray();
 
 		StringBuffer temp = new StringBuffer();
@@ -121,15 +119,15 @@ public class Descompactador {
 		char[] dados = dadosCodificados.toCharArray();
 		StringBuffer dadosTraduzidos = new StringBuffer();
 
-		StringBuffer temp = null;
+		String temp = "";
 		for(int i = 0; i < dados.length; i++){
-			temp = new StringBuffer(Integer.toBinaryString(dados[i]));
+			temp = Integer.toBinaryString(dados[i]);
 			for(int j = 0; j < 8 - temp.length(); j++){
 				dadosTraduzidos.append("0");
 			}
-			dadosTraduzidos.append(temp.toString());
+			dadosTraduzidos.append(temp);
 			if(i + 1 == dados.length){
-				System.out.println(temp.toString());
+				System.out.println(temp);
 			}
 		}
 		return dadosTraduzidos.toString();

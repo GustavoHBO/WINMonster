@@ -150,10 +150,6 @@ public class Compactador {
 			for(; j < dadosArray.length; j++){// Aqui � copiado o restante do arquivo.
 				temp.append(dadosArray[j]);
 			}
-			j = j - i;
-			for(; j < 8; j++){
-				
-			}
 			codigo[tamanho - 1] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de bin�rio para um valor inteiro.
 		}
 		return codigo;
