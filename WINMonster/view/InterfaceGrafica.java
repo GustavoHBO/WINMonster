@@ -1,5 +1,12 @@
 package view;
 
+import java.awt.GridBagLayout;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+
 import exceptions.ArquivoNaoEncontradoException;
 import exceptions.ArquivoNaoLidoException;
 
@@ -84,33 +91,35 @@ public class InterfaceGrafica {
 		//		
 		//		System.out.println((char)1);
 		//
-		//		JFrame frame = new JFrame();
-		//		frame.setSize(300, 400);
-		//		
-		//		JPanel panel = new JPanel();
-		//		
-		//		JTable table = new JTable();
-		//		
-		//		table.setModel(new javax.swing.table.DefaultTableModel(
-		//			new Object[][]{}, 
-		//			new String[]{
-		//					"Função", "Atalho"
-		//			}
-		//		));
-		//		javax.swing.table.DefaultTableModel dtm = (javax.swing.table.DefaultTableModel)table.getModel();
-		//		String[] ca = {"Coisa"};
-		//		dtm.addRow(ca);
-		//		dtm.addRow(new Object[]{"Comprimir", "Alt + C"});
-		//		table.setVisible(true);
-		//		 
-		//		panel.setVisible(true);
-		//		panel.add(table);
-		//		frame.setVisible(true);
-		//		frame.add(panel);
+				JFrame frame = new JFrame();
+				frame.setSize(300, 400);
+				
+				JPanel panel = new JPanel();
+				
+				JTable table = new JTable();
+				
+				JButton botao = new JButton("oi");
+				botao.setBounds(100, 100, JButton.CENTER, JButton.CENTER);
+				
+				table.setModel(new javax.swing.table.DefaultTableModel(
+					new Object[][]{}, 
+					new String[]{
+							"Função", "Atalho"
+					}
+				));
+				javax.swing.table.DefaultTableModel dtm = (javax.swing.table.DefaultTableModel)table.getModel();
+				String[] ca = {"Coisa"};
+				dtm.addRow(ca);
+				dtm.addRow(new Object[]{"Comprimir", "Alt + C"});
+				table.setVisible(true);
 
-		StringBuffer a = new StringBuffer("00000000");
-		a.setCharAt(0, '1');
-		System.out.println(a);
+				panel.setVisible(true);
+				panel.setLayout(new GridBagLayout());
+				panel.add(table).setLocation(10, 20);;
+				panel.add(botao);
+				frame.setVisible(true);
+				frame.add(panel);
+
 
 
 	}

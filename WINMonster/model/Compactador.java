@@ -14,11 +14,11 @@ public class Compactador {
 
 	/*------------------------------------------------------------------------------------------------*/
 	/**
-	 * Mï¿½todo responsÃ¡vel pela compressÃ£o do arquivo escolhido.
+	 * Método responsÃ¡vel pela compressÃ£o do arquivo escolhido.
 	 * @param caminhoArquivo - LocalizaÃ§Ã£o do arquivo a ser comprimido.
-	 * @throws ArquivoNaoCriadoException - Caso o arquivo compactado nï¿½o possa ser criado.
+	 * @throws ArquivoNaoCriadoException - Caso o arquivo compactado não possa ser criado.
 	 * @throws ArquivoNaoLidoException - Caso o arquivo escolhido pelo usuÃ¡rio nÃ£o possa ser lido.
-	 * @throws ArquivoNaoEncontradoException - Caso o arquivo escolhido pelo usuï¿½rio nï¿½o seja encontrado.
+	 * @throws ArquivoNaoEncontradoException - Caso o arquivo escolhido pelo usuário não seja encontrado.
 	 */
 
 	public static void comprimirArquivo(String caminhoArquivo) throws ArquivoNaoCriadoException, ArquivoNaoEncontradoException, ArquivoNaoLidoException{
@@ -26,23 +26,26 @@ public class Compactador {
 		String dadosArquivo = Fachada.lerArquivo(caminhoArquivo);// Aqui Ã© feita a leitura do arquivo.
 		int[] frequenciaCaractere = calcularFrequencia(dadosArquivo);// Aqui a calculada a frequÃªncia de cada caractere do texto lido.
 		FilaPrioridade filaFrequencia = criarFilaComFrequencias(frequenciaCaractere);// Cria a fila de prioridade onde a frequÃªncia ï¿½ considerada a chave.
-		ArvoreHuffman arvoreHuffman = filaFrequencia.gerarArvoreHuffman();// Cria a ï¿½rvore de Huffman.
-		String[] dicionario = gerarCodigoHuffman(arvoreHuffman);// Aqui ï¿½ criado o dicionÃ¡rio para cada caractere do texto lido.
+		ArvoreHuffman arvoreHuffman = filaFrequencia.gerarArvoreHuffman();// Cria a árvore de Huffman.
+		String[] dicionario = gerarCodigoHuffman(arvoreHuffman);// Aqui é criado o dicionÃ¡rio para cada caractere do texto lido.
 
 		String extensao = caminhoArquivo.substring(caminhoArquivo.lastIndexOf('.'));
 
-		String dadosCodificados = codificaCaractere(dicionario, dadosArquivo.toCharArray());// A partir do dicionÃ¡rio ï¿½ criado o arquivo codificado.
-		int[] dadosCodificadosSubstituidos = substituirCaractere(dadosCodificados);// Aqui o cï¿½digo ï¿½ transformado em um array de inteiro para ocupar pouco espaï¿½o.
+		String dadosCodificados = codificaCaractere(dicionario, dadosArquivo.toCharArray());// A partir do dicionÃ¡rio é criado o arquivo codificado.
+		int[] dadosCodificadosSubstituidos = substituirCaractere(dadosCodificados);// Aqui o código é transformado em um array de inteiro para ocupar pouco espaço.
 		String dicionarioCodificado = codificarDicionario(dicionario);
-		Fachada.escreverArquivo(extensao + dicionarioCodificado, dadosCodificadosSubstituidos, caminhoArquivo);
+		String gravarDados = extensao;
+		gravarDados += VerificaIntegridade.criarCodigo(dadosArquivo);
+		gravarDados += dicionarioCodificado;
+		Fachada.escreverArquivo(gravarDados, dadosCodificadosSubstituidos, caminhoArquivo);
 
 	}
 	/*-----------------------------------------------------------------------------------------------------*/
 	private static String codificarDicionario(String[] dicionario) {
 		/*
-		 * Abaixo ï¿½ criado a String que armazenarï¿½ o dicionÃ¡rio e o arquivo codificado para escrita.
-		 * O tamanho ï¿½ definido como a soma do tamanho da array de dados + o tamanho do dicionÃ¡rio + dois
-		 * caracteres que servirï¿½o para definir o inicio e o fim do dicionÃ¡rio.
+		 * Abaixo é criado a String que armazenará o dicionário e o arquivo codificado para escrita.
+		 * O tamanho é definido como a soma do tamanho da array de dados + o tamanho do dicionÃ¡rio + dois
+		 * caracteres que servirão para definir o inicio e o fim do dicionÃ¡rio.
 		 */
 		StringBuffer dicionarioCodificado = new StringBuffer();
 
@@ -50,17 +53,17 @@ public class Compactador {
 
 		for(int i = 0; i < dicionario.length; i++){
 			if(dicionario[i] != null){
-				if(dicionarioCodificado.length() != 2){// Sï¿½ irï¿½ adicionar o '-' quando nï¿½o tiver apenas o "{{".
-					dicionarioCodificado.append('-');//Define uma separaï¿½ï¿½o entre um cï¿½digo e o caractere.
+				if(dicionarioCodificado.length() != 2){// Só irá adicionar o '-' quando não tiver apenas o "{{".
+					dicionarioCodificado.append('-');//Define uma separação entre um código e o caractere.
 				}
-				dicionarioCodificado.append(dicionario[i]);//Aqui ï¿½ armazenado o cï¿½digo do byte correspondente ao caractere.
-				dicionarioCodificado.append('-');//Define uma separaï¿½ï¿½o entre um cï¿½digo e o caractere.
-				dicionarioCodificado.append((char)i);// Aqui ï¿½ escrito o caractere para poder reescrever o arquivo novamente.
+				dicionarioCodificado.append(dicionario[i]);//Aqui é armazenado o código do byte correspondente ao caractere.
+				dicionarioCodificado.append('-');//Define uma separação entre um código e o caractere.
+				dicionarioCodificado.append((char)i);// Aqui é escrito o caractere para poder reescrever o arquivo novamente.
 
 			}
 		}
 
-		dicionarioCodificado.append("}}");// Define o fim do dicionÃ¡rio.
+		dicionarioCodificado.append("}}");// Define o fim do dicionário.
 		return dicionarioCodificado.toString();
 	}
 	/*-----------------------------------------------------------------------------------------------------*/
@@ -101,10 +104,10 @@ public class Compactador {
 
 	/*-----------------------------------------------------------------------------------------------------*/
 	/**
-	 * MÃ©todo que recebe os dados lidos do arquivo e o dicionÃ¡rio e cria o array com os caracteres codificados.
-	 * @param dicionario - DicionÃ¡rio com os cÃ³digos.
+	 * Método que recebe os dados lidos do arquivo e o dicionário e cria o array com os caracteres codificados.
+	 * @param dicionario - Dicionário com os códigos.
 	 * @param dadosArquivo - Os dados lidos do arquivo.
-	 * @return dadosArquivoCodificado - String com a substituiï¿½ï¿½o dos caracteres.
+	 * @return dadosArquivoCodificado - String com a substituição dos caracteres.
 	 */
 	public static String codificaCaractere(String[] dicionario, char[] dadosArquivo){
 
@@ -112,46 +115,59 @@ public class Compactador {
 		for(int i = 0; i < dadosArquivo.length; i++){
 			dadosArquivoCodificado.append(dicionario[dadosArquivo[i]]);
 		}
+		dadosArquivoCodificado.append('1');// Adiciona o 1 para poder definir o final do texto.
+		
+		
+		while(dadosArquivoCodificado.length() % 8 != 0){//Teste
+			dadosArquivoCodificado.append("0");
+		}
 		return dadosArquivoCodificado.toString();
 	}
 	/*-----------------------------------------------------------------------------------------------------*/
 	/**
-	 * Mï¿½todo responsï¿½vel por receber os dados codificados e transforma-los em um array de inteiros.
+	 * Método responsável por receber os dados codificados e transforma-los em um array de inteiros.
 	 * @param dadosCodificados - Dados do arquivo lido codificado.
-	 * @return codigo - Array com cï¿½digos para ser escrito no arquivo.
+	 * @return codigo - Array com códigos para ser escrito no arquivo.
 	 */
 	public static int[] substituirCaractere(String dadosCodificados){
 		int[] codigo;
 		int tamanho = (dadosCodificados.length() / 8);
 		char[] dadosArray = dadosCodificados.toCharArray();
 		StringBuffer temp;
-		if(dadosCodificados.length() % 8 == 0){// Caso o arquivo lido seja divisï¿½vel por 8 nï¿½o haverï¿½ sobra de bits.
+		
+		
+		
+		//if(dadosCodificados.length() % 8 == 0){// Caso o arquivo lido seja divisível por 8 não haveria sobra de bits.
 			codigo = new int[tamanho];
 			for (int i = 0; i < tamanho ; i++){
 				temp = new StringBuffer();
 				for(int j = i * 8; j < i * 8 + 8; j++){
 					temp.append(dadosArray[j]);
 				}
-				codigo[i] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binï¿½rio para um valor inteiro.
+				codigo[i] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binário para um valor inteiro.
 			}
-		}
-		else{//Caso não seja divisível por 8 haverá sobra de bits, isto tem que ser tratado de forma diferente.
+		//}
+		/*else{//Caso não seja divisível por 8 haverá sobra de bits, isto tem que ser tratado de forma diferente.
 			int i = 0;
+			System.out.println("Isso não deveria aparecer");
 			codigo = new int[++tamanho];
 			for (i = 0; i < tamanho - 1; i++){
 				temp = new StringBuffer();
 				for(int j = i * 8; j < i * 8 + 8; j++){
 					temp.append(dadosArray[j]);
 				}
-				codigo[i] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binï¿½rio para um valor inteiro.
+				codigo[i] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binário para um valor inteiro.
 			}
 			temp = new StringBuffer();
 			int j = i * 8;
-			for(; j < dadosArray.length; j++){// Aqui ï¿½ copiado o restante do arquivo.
+			for(; j < dadosArray.length; j++){// Aqui é copiado o restante do arquivo.
 				temp.append(dadosArray[j]);
 			}
-			codigo[tamanho - 1] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binï¿½rio para um valor inteiro.
-		}
+			for(j = 0; j < 8 - dadosArray.length; j++){
+				temp.append("0");
+			}
+			codigo[tamanho - 1] = Integer.parseInt(temp.toString(), 2);// Aqui transformo a String de binário para um valor inteiro.
+		}*/
 		return codigo;
 	}
 }

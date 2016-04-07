@@ -25,9 +25,10 @@ public class Descompactador {
 	public static void descompactar(String caminhoArquivo) throws ArquivoNaoLidoException, ArquivoNaoEncontradoException, ArquivoNaoCriadoException{
 		String dadosCodificados = Fachada.lerArquivo(caminhoArquivo);
 		/*
-		 * Aqui ï¿½ pego o cï¿½digo do caractere e o caractere que corresponde a este cï¿½digo, criando assim o dicionÃ¡rio.
+		 * Aqui é pego o código do caractere e o caractere que corresponde a este cï¿½digo, criando assim o dicionÃ¡rio.
 		 */
 		String extensao = dadosCodificados.substring(0, dadosCodificados.indexOf('.') + 4);
+		
 		String[] dicionario = dadosCodificados.substring(dadosCodificados.indexOf("{{") + 2, dadosCodificados.indexOf("}}")).split("-");
 		dadosCodificados = dadosCodificados.substring(dadosCodificados.indexOf("}}") + 2);// Agora pego apenas o arquivo a ser traduzido.
 
@@ -122,14 +123,15 @@ public class Descompactador {
 		String temp = "";
 		for(int i = 0; i < dados.length; i++){
 			temp = Integer.toBinaryString(dados[i]);
+			
 			for(int j = 0; j < 8 - temp.length(); j++){
 				dadosTraduzidos.append("0");
 			}
 			dadosTraduzidos.append(temp);
-			if(i + 1 == dados.length){
-				System.out.println(temp);
-			}
 		}
-		return dadosTraduzidos.toString();
+		System.out.println(dadosTraduzidos.toString());
+		temp = dadosTraduzidos.substring(0, dadosTraduzidos.lastIndexOf("1"));
+		System.out.println(temp);
+		return temp;
 	}
 }
